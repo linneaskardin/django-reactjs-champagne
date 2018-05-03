@@ -20,7 +20,9 @@ from django.urls import re_path, path, include
 from django.views.generic import TemplateView
 
 urlpatterns = [ 
+    path('', TemplateView.as_view(template_name='home.html'), name='home'), #If loginpage or log out page is change this has to be changed too. 
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')), #To use the auth app we need to add it to our project-level urls.py file.The auth app we’ve now included provides us with several authentication views
     path('toolgate_maps/',include('map.urls')),
 ]

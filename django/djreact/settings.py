@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'map',
+    'accounts',
 
 ]
 
@@ -101,7 +102,7 @@ LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'postgres',
+        'NAME': 'postgres3',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
@@ -159,3 +160,9 @@ try:
     from .local_settings import *  # flake8: noqa
 except ImportError:
     pass
+
+# my_project/settings.py
+LOGIN_REDIRECT_URL = 'home' #Toolgate Maps will be shown when you login
+LOGOUT_REDIRECT_URL = 'home' #Home page will appear when you log out.
+
+AUTH_USER_MODEL = 'accounts.CustomUser'

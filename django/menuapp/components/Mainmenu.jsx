@@ -10,6 +10,7 @@ export default class Mainmenu extends React.Component {
           <Navbar fluid collapseOnSelect>
           <Nav>
             <NavItem href="/">Hem</NavItem>
+            {/* This link only wokrs if you are on the homepage or on toolgate_maps */}
             <NavItem href="toolgate_maps/punkter_pa_karta">Toolgate Maps</NavItem>       
             <NavItem>Skapa konto</NavItem>
           </Nav>
