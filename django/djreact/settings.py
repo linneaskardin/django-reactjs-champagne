@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 
     'jquery',
 
-    'django.contrib.sites',
+    #'django.contrib.sites', # Took this away in order for the admin site to work //CE
     'django.contrib.admindocs',
     'django.contrib.gis',
     'leaflet',
@@ -81,7 +81,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djreact.wsgi.application'
 
-LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan. 
+LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
     'DEFAULT_CENTER': (59.7177013, 17.3500491),
     'DEFAULT_ZOOM': 9,
     'MAX_ZOOM': 20,
