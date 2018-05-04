@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     #'django.contrib.sites', # Took this away in order for the admin site to work //CE
     'django.contrib.admindocs',
     'django.contrib.gis',
+    'mapwidgets', #Ingrid added 4/5
     'leaflet',
     'map',
     'accounts',
@@ -82,6 +83,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djreact.wsgi.application'
 
+MAP_WIDGETS = { #Ingrid: this is googlekarta
+    "GooglePointFieldWidget": (
+        ("zoom", 15),
+        ("mapCenterLocation", [57.7177013, -16.6300491]),
+    ),
+    #"GoogleStaticMapMarkerSettings": (
+    #    ("color", "green"),
+    #),
+    #"GEOPOSITION_GOOGLE_MAPS_API_KEY": "AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI"
+    "GOOGLE_MAP_API_KEY": "AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI"
+}
+
 LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
     'DEFAULT_CENTER': (59.7177013, 17.3500491),
     'DEFAULT_ZOOM': 9,
@@ -106,7 +119,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PORT': '5433', #Ingrid uses port 5433, Clara and Linnea 5432 (i think)
     }
 }
 
