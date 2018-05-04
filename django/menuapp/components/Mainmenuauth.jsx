@@ -8,7 +8,7 @@ export default class Mainmenu extends React.Component {
   render() {
     return (
           <Navbar fluid collapseOnSelect>
-          <Nav>
+          <Nav class="navbar navbar-dark bg-primary">
             <NavItem href="/">Hem</NavItem>
             {/* This link only wokrs if you are on the homepage or on toolgate_maps */}
             <NavItem href="toolgate_maps/punkter_pa_karta">Toolgate Maps</NavItem>       
