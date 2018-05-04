@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.gis.db import models
 from django.db.models import Manager as GeoManager
 
+
 # THE MAP
 class Punkt(models.Model):
     nameOfProperty = models.CharField(max_length=100, null=True)
@@ -42,5 +43,27 @@ class Property(models.Model):
     med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
 
+
     def __unicode__(self):
         return '%s %s %s' % (self.med_coord.x, self.med_coord.y)
+
+    class Meta:
+        ordering = ('coord_n',) # Order by northern coordinate /CE
+        
+class PropertyBoarder(models.Model):
+    internid = models.BigIntegerField()
+    detaljtyp = models.CharField(max_length=10)
+    gdat = models.CharField(max_length=16)
+    adat = models.CharField(max_length=16)
+    xyfel = models.BigIntegerField()
+    metodplan = models.IntegerField()
+    flyghojd = models.BigIntegerField()
+    undskala = models.BigIntegerField()
+    knid = models.IntegerField()
+    geom = models.MultiLineStringField(srid=4326)
+    
+    def __unicode__(self):
+        return self.internid
+    class Meta:
+        verbose_name_plural ="Property Boarders" #Detta ger hur namnet visas i Adminlistan
+
