@@ -45,7 +45,7 @@ class Command(BaseCommand):
             firstname=z.get(key,{'fornamn':'NA'})['fornamn'],surname=z.get(key,{'efternamn':'NA'})['efternamn'],
             coname=z.get(key,{'firmanamn':'NA'})['firmanamn'],jurform=z.get(key,{'jurform':'NA'})['jurform'])
             q.save()
-            y = Property(coord_n=z.get(key,{'coordn':'NA'})['coordn'],coord_e=z.get(key,{'coorde':'NA'})['coorde'])
+            y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'])
             y.save()
             y.owners.add(q)
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE

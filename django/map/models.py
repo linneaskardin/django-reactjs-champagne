@@ -39,7 +39,7 @@ class PropertyOwner(models.Model):
         return (self.coname)
 
 class Property(models.Model):
-    med_coord = models.PointField('Mediankoordinater',geography=True, srid=4326,blank=True, null=True)
+    med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
 
     def __unicode__(self):
