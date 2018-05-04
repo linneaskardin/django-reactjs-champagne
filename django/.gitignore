@@ -2,4 +2,6 @@
 djreact/static/bundles/local/
 node_modules/
 webpack-stats-local.json
-webpack.local-settings.js
+.DS_Store
+django/.DS_Store
+django/djreact(DS_Store)

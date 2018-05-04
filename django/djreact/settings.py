@@ -43,11 +43,12 @@ INSTALLED_APPS = [
 
     'jquery',
 
-    'django.contrib.sites',
+    #'django.contrib.sites', # Took this away in order for the admin site to work //CE
     'django.contrib.admindocs',
     'django.contrib.gis',
     'leaflet',
     'map',
+    'accounts',
 
 ]
 
@@ -81,7 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djreact.wsgi.application'
 
-LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan. 
+LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
     'DEFAULT_CENTER': (59.7177013, 17.3500491),
     'DEFAULT_ZOOM': 9,
     'MAX_ZOOM': 20,
@@ -101,7 +102,7 @@ LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'postgres',
+        'NAME': 'postgres3',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
@@ -159,3 +160,9 @@ try:
     from .local_settings import *  # flake8: noqa
 except ImportError:
     pass
+
+# my_project/settings.py
+LOGIN_REDIRECT_URL = 'toolgate_maps' #Toolgate Maps will be shown when you login
+LOGOUT_REDIRECT_URL = 'home' #Home page will appear when you log out.
+
+AUTH_USER_MODEL = 'accounts.CustomUser'

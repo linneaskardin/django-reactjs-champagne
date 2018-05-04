@@ -1,0 +1,20 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+{% block title %}Home{% endblock %}
+
+{% block main %}
+
+<div id="MenuApp"></div> 
+{% render_bundle 'vendors' %} 
+{% render_bundle 'MenuApp' %}
+
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+  <a href="{% url 'signup' %}">signup</a>
+{% endif %}
+{% endblock %}
