@@ -10,6 +10,7 @@ class Command(BaseCommand):
         # Everything needs to be indented //CE
         import pyproj
         from map.models import Property, PropertyOwner
+        from django.contrib.gis.geos import Point
         import csv
         # Import data for coordinates
         csvkoord= open('MEDIAN_09M.txt', 'r', encoding='mac_roman', newline='') # Need encoding mac_roman and newline=''. Don't know why //CE
@@ -20,7 +21,9 @@ class Command(BaseCommand):
         for row in readerkoord:
             # Define projections using EPSG codes
             wgs_e, wgs_n = pyproj.transform(SWEREF99,wgs84, row[6], row[5])
-            d[row[3]] = {'coorde':wgs_e, 'coordn':wgs_n} # Populate dictionary
+            # Create Point
+            pnt = Point(wgs_e, wgs_n)
+            d[row[3]] = {'med_coord':pnt} # Populate dictionary
         csvkoord.close() # VERY important to close!
         # Import data for Property Owners
         csvlag = open('LAGFP_35S.txt','r', encoding='mac_roman',newline='')
