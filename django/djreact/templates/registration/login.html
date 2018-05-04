@@ -9,16 +9,17 @@
 {% render_bundle 'vendors' %} 
 {% render_bundle 'MenuApp' %}
 <div class="container">
-<!-- <div class="col-sm">  -->
+
 <h2>Login</h2>
 <form method="post">
   {% bootstrap_form form %}
   {% csrf_token %}
-  <!-- {{ form.as_p }} -->
+
   {% buttons %}
   <button type="submit" class="btn btn-primary center-block">Logga In</button>
   {% endbuttons %}
 </form>
-<!-- </div> -->
+
 </div>
+
 {% endblock %}
