@@ -8,7 +8,7 @@ from .views import punkt_datasets , waypoint_datasets
 print("urls.py -map 1")
 
 urlpatterns=[
-    re_path('punkter_pa_karta', views.index, name='map-index'),
+    re_path('punkter_pa_karta', views.index, name='toolgate_maps'),
     re_path('punkters_data/', views.punkt_datasets, name='laddapunkter'),
     re_path('waypoints_data/', views.waypoint_datasets, name='laddawaypoints'), # properties=('fastighetsbeteckning', 'geometry'),
 ]

@@ -162,7 +162,7 @@ except ImportError:
     pass
 
 # my_project/settings.py
-LOGIN_REDIRECT_URL = 'home' #Toolgate Maps will be shown when you login
+LOGIN_REDIRECT_URL = 'toolgate_maps' #Toolgate Maps will be shown when you login
 LOGOUT_REDIRECT_URL = 'home' #Home page will appear when you log out.
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
