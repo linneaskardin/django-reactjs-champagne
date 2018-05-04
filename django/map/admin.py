@@ -20,7 +20,7 @@ class PropertyOwnerAdmin(admin.ModelAdmin): # Decides what is shown for Property
     list_display=('coname', 'reg_no', 'firstname', 'surname')
     pass # Means that it shouldn't do anything with this class after 'pass'
 class PropertyAdmin(admin.ModelAdmin):
-    list_display=('coord_n', 'coord_e')
+    # Don't know how to display PointField
     pass
 admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyOwner, PropertyOwnerAdmin)# Makes data appear on admin site
