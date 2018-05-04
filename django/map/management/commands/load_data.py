@@ -6,6 +6,7 @@ class Command(BaseCommand):
     help = 'Populates models'
 
     def handle(self, *args, **options):
+        # Put everything that was originally in the python script. Can't include functions //CE
         import pyproj
         from map.models import Property, PropertyOwner
         import csv
@@ -17,9 +18,7 @@ class Command(BaseCommand):
         SWEREF99=pyproj.Proj("+init=EPSG:3006") # SWEREF 99 TM system
         for row in readerkoord:
             # Define projections using EPSG codes
-            #UTM33N=pyproj.Proj("+init=EPSG:32633") # UTM coords, zone 33N Corresponds to Sweden
             wgs_e, wgs_n = pyproj.transform(SWEREF99,wgs84, row[6], row[5])
-            #wgsCoords = transCoords(row[6],row[5]) # Translate from SWEREF99 to wgs84
             d[row[3]] = {'coorde':wgs_e, 'coordn':wgs_n} # Populate dictionary
         csvkoord.close() # VERY important to close!
         # Import data for Property Owners
@@ -45,5 +44,5 @@ class Command(BaseCommand):
             y = Property(coord_n=z.get(key,{'coordn':'NA'})['coordn'],coord_e=z.get(key,{'coorde':'NA'})['coorde'])
             y.save()
             y.owners.add(q)
-
+            # Everything needs to be indented except this last line that prints a message in the console //CE
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE
