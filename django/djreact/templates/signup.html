@@ -1,17 +1,26 @@
 <!-- templates/signup.html -->
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Sign Up{% endblock %}
 
 {% block main %}
+<!-- Adds the menu to the sign up page -->
 <div id="MenuApp"></div> 
 {% render_bundle 'vendors' %} 
 {% render_bundle 'MenuApp' %}
-
-  <h2>Sign up</h2>
+<!-- Change size etc on the sign up form -->
+<div class="container">
+<div class="col-sm"> 
+<h2>Skapa konto</h2>
   <form method="post">
+<!-- This row creates the forms -->
+      {% bootstrap_form form %}
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">Skapa konto</button>
+    {% endbuttons %}
   </form>
+</div>
+</div>
 {% endblock %}
