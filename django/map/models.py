@@ -39,8 +39,8 @@ class PropertyOwner(models.Model):
         return (self.coname)
 
 class Property(models.Model):
-    coord_n = models.CharField('N-koordinat', max_length=30,default = None, null=True)
-    coord_e= models.CharField('E-koordinat', max_length=30, default=None, null=True)
+    med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
-    class Meta:
-        ordering = ('coord_n',) # Order by northern coordinate /CE
+
+    def __unicode__(self):
+        return '%s %s %s' % (self.med_coord.x, self.med_coord.y)

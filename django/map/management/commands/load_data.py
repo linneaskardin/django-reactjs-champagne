@@ -6,8 +6,11 @@ class Command(BaseCommand):
     help = 'Populates models'
 
     def handle(self, *args, **options):
+        # Put everything that was originally in the python script. Can't include functions.
+        # Everything needs to be indented //CE
         import pyproj
         from map.models import Property, PropertyOwner
+        from django.contrib.gis.geos import Point
         import csv
         # Import data for coordinates
         csvkoord= open('MEDIAN_09M.txt', 'r', encoding='mac_roman', newline='') # Need encoding mac_roman and newline=''. Don't know why //CE
@@ -17,10 +20,10 @@ class Command(BaseCommand):
         SWEREF99=pyproj.Proj("+init=EPSG:3006") # SWEREF 99 TM system
         for row in readerkoord:
             # Define projections using EPSG codes
-            #UTM33N=pyproj.Proj("+init=EPSG:32633") # UTM coords, zone 33N Corresponds to Sweden
             wgs_e, wgs_n = pyproj.transform(SWEREF99,wgs84, row[6], row[5])
-            #wgsCoords = transCoords(row[6],row[5]) # Translate from SWEREF99 to wgs84
-            d[row[3]] = {'coorde':wgs_e, 'coordn':wgs_n} # Populate dictionary
+            # Create Point
+            pnt = Point(wgs_e, wgs_n)
+            d[row[3]] = {'med_coord':pnt} # Populate dictionary
         csvkoord.close() # VERY important to close!
         # Import data for Property Owners
         csvlag = open('LAGFP_35S.txt','r', encoding='mac_roman',newline='')
@@ -42,8 +45,7 @@ class Command(BaseCommand):
             firstname=z.get(key,{'fornamn':'NA'})['fornamn'],surname=z.get(key,{'efternamn':'NA'})['efternamn'],
             coname=z.get(key,{'firmanamn':'NA'})['firmanamn'],jurform=z.get(key,{'jurform':'NA'})['jurform'])
             q.save()
-            y = Property(coord_n=z.get(key,{'coordn':'NA'})['coordn'],coord_e=z.get(key,{'coorde':'NA'})['coorde'])
+            y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'])
             y.save()
             y.owners.add(q)
-
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE
