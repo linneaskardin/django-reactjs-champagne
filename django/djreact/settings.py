@@ -55,7 +55,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # Because of a bug. CorsMiddleware should be placed as high as possible, especially before any middleware that can generate responses such as Django's CommonMiddleware or Whitenoise's WhiteNoiseMiddleware. If it is not before, it will not be able to add the CORS headers to these responses. //CE
+    'corsheaders.middleware.CorsMiddleware', # Because of a bug. CorsMiddleware should be placed as high as possible,
+    #especially before any middleware that can generate responses such as Django's CommonMiddleware or Whitenoise's WhiteNoiseMiddleware.
+    #If it is not before, it will not be able to add the CORS headers to these responses. //CE
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -171,4 +173,6 @@ LOGOUT_REDIRECT_URL = 'home' #Home page will appear when you log out.
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-CORS_ORIGIN_ALLOW_ALL = True #Because of a bug. Configure the middleware's behaviour in your Django settings. You must add the hosts that are allowed to do cross-site requests to CORS_ORIGIN_WHITELIST, or set CORS_ORIGIN_ALLOW_ALL to True to allow all hosts. //CE
+CORS_ORIGIN_ALLOW_ALL = True #Because of a bug. Configure the middleware's behaviour in your Django settings.
+# You must add the hosts that are allowed to do cross-site requests to CORS_ORIGIN_WHITELIST,
+#or set CORS_ORIGIN_ALLOW_ALL to True to allow all hosts. //CE
