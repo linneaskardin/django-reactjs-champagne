@@ -36,10 +36,12 @@
         #map #infowindow-content {
             display: inline;
         }
-        
-        #info-box{
-            height: 20px; /*Ingrid: change to something better*/
-            background-color: aqua; /*Ingrid: change to something better*/
+
+        #info-box {
+            height: 20px;
+            /*Ingrid: change to something better*/
+            background-color: yellow;
+            /*Ingrid: change to something better*/
         }
 
     </style>
@@ -60,14 +62,16 @@
     <div id="MenuApp"></div>
 
     <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <input id="pac-input" class="controls" type="text" placeholder="Sök på adress eller stad">
     <br>
     <h4>Text</h4>
     <div id="map"></div>
-    <div id="info-box"></div>
-    
-    
-    
+    <div id="info-box">
+        <h4>Hej hej</h4>
+    </div>
+
+
+
 
 
 
@@ -88,39 +92,61 @@
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
+            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyOwners_data/');
+
+            //    text = "hej";
+            // var obj = JSON.parse(text);
+
+            const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+            $.ajax({
+                url: ownersURL,
+                success: function(result) {
+                    var ownerObj = result;
 
 
-            map.data.addListener('click', function(event) {
-                document.getElementById('info-box').textContent =
-                    event.feature.getProperty('coord_e');
+                    console.log(ownerObj);
+                    //console.log("features: " + ownerObj.features);
+                    console.log("specifik feature: " + ownerObj.features[1]);
+                    console.log(": " + ownerObj.features[1].properties["pk"]);
+
+
+                    map.data.addListener('click', function(event) {
+                        var infoText = "Ägare: start";
+                        var ownerID = event.feature.getProperty('owners');
+                        console.log("ownerID: " + ownerID);
+                        infotext = ownerID;
+
+
+                        var i;
+                        for (i = 0; i < ownerObj.features.length; i++) {
+                            if (ownerObj.features[i].properties["pk"]==ownerID){
+                                console.log("DE ÄR LIKA");
+                                firstName = ownerObj.features[i].properties["firstname"];
+                                surName = ownerObj.features[i].properties["surname"];
+                                companyName = ownerObj.features[i].properties["coname"];
+                                juridicalForm = ownerObj.features[i].properties["jurform"];
+                                reg_no = ownerObj.features[i].properties["reg_no"]+" pattar";
+                                break;
+                                }                            
+                        }
+
+                        document.getElementById('info-box').textContent = firstName +" "+ surName +" "+ companyName +" "+ juridicalForm +" "+ reg_no;
+                    });
+
+                }
             });
 
-            map.data.setStyle({ // Gör linjerna smala. Ingrid
+
+
+
+
+
+
+            map.data.setStyle({ // Styling of boarderlines. Ingrid
                 strokeWeight: 0.5,
                 strokeColor: "#FF0000",
             });
 
-            function addMarkers() {
-                var marker = new google.maps.Marker({
-                    position: {
-                        lat: 60.062,
-                        lng: 17.0773
-                    },
-                    icon: {
-                        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                        scale: 6
-                    },
-                    map: map
-                });
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: "statiskt placerad markör"
-                });
-
-                marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                });
-            }
 
             function createSearchBoxCities() {
                 var input = document.getElementById('pac-input');
@@ -166,6 +192,29 @@
                     map.fitBounds(bounds);
                 });
             }
+
+            function addMarkers() {
+                var marker = new google.maps.Marker({
+                    position: {
+                        lat: 60.062,
+                        lng: 17.0773
+                    },
+                    icon: {
+                        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                        scale: 6
+                    },
+                    map: map
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "statiskt placerad markör"
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+            }
+
 
             addMarkers();
             createSearchBoxCities();
