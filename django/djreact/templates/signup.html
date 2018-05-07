@@ -12,16 +12,26 @@
 <!-- Add background picture -->
 <!-- Change size etc on the sign up form -->
 <div class="container">
-<div class="col-sm col-"> 
 <h2>Skapa konto</h2>
+<div class="row">
+<div class="col-sm col-"> 
   <form method="post">
 <!-- This row creates the forms -->
-      {% bootstrap_form form %}
+    {% bootstrap_form form %}
     {% csrf_token %}
     {% buttons %}
     <button type="submit" class="btn btn-primary center-block">Skapa konto</button>
     {% endbuttons %}
   </form>
 </div>
-</div>
+<div class="col-sm-6" style="background-color:lightgrey;">
+  <h4>Användarvillkor</h4>
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.  
+  </div>
+  </div>
+  </div>
+
 {% endblock %}

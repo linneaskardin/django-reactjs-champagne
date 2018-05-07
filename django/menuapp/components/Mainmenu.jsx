@@ -13,7 +13,7 @@ export default class Mainmenu extends React.Component {
       <a className="navbar-brand">Toolgate Maps</a>
     </div>
     <ul className="nav navbar-nav">
-      <li className="active"><a href="/"> Hem </a></li>
+      <li><a href="/"> Hem </a></li>
       <li><a href="toolgate_maps/punkter_pa_karta"> Toolgate Maps </a></li>
       <li><a href="accounts/signup"><span className="glyphicon glyphicon-user"></span> Skapa Konto </a></li>
     </ul>
