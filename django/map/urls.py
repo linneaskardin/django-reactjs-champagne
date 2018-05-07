@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.urls import re_path, path
 from djgeojson.views import GeoJSONLayerView
 from map import views
-from .views import punkt_datasets , waypoint_datasets
+from .views import punkt_datasets , waypoint_datasets, propertyBoarder_datasets
 
 
 print("urls.py -map 1")
