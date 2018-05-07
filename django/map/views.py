@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from django.template import loader
 from django.http import HttpResponse
-from .models import Punkt, Waypoint
+from .models import Punkt, Waypoint, PropertyBoarder
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
@@ -34,4 +34,4 @@ def propertyBoarder_datasets(request):
 
 def googleKarta(request):
     print('views.py 1')
-    return render(request, 'map/googleKartaData2.html')
+    return render(request, 'map/googleKartaData.html')

@@ -44,3 +44,18 @@ class Property(models.Model):
 
     def __unicode__(self):
         return '%s %s %s' % (self.med_coord.x, self.med_coord.y)
+    
+class PropertyBoarder(models.Model):
+    internid = models.BigIntegerField()
+    detaljtyp = models.CharField(max_length=10)
+    gdat = models.CharField(max_length=16)
+    adat = models.CharField(max_length=16)
+    xyfel = models.BigIntegerField()
+    metodplan = models.IntegerField()
+    flyghojd = models.BigIntegerField()
+    undskala = models.BigIntegerField()
+    knid = models.IntegerField()
+    geom = models.MultiLineStringField(srid=4326)
+    
+    def __unicode__(self):
+        return self.internid

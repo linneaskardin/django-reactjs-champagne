@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.urls import re_path, path
 from djgeojson.views import GeoJSONLayerView
 from map import views
-from .views import punkt_datasets , waypoint_datasets
+from .views import punkt_datasets , waypoint_datasets, propertyBoarder_datasets
 
 
 print("urls.py -map 1")
@@ -16,6 +16,7 @@ urlpatterns=[
     re_path('properties_data/', views.property_datasets, name='laddapunkter'),
     
     re_path('punkter_pa_googlekarta', views.googleKarta),
+]
 
 
 print("urls.py -map 2")

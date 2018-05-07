@@ -1,7 +1,4 @@
-{% extends "base.html" %}
-{% load render_bundle from webpack_loader %}
-
-{% block main %}
+{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% block main %}
 <!doctype html>
 <html>
 {% load static %} {% load leaflet_tags %}
@@ -9,95 +6,166 @@
 
 <head>
     <title> Toolgate Maps - Map</title>
-    {% leaflet_js %} {% leaflet_css %}
     {{ form.media }}
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
     <script type="text/javescript" src='% static dist/leaflet.ajax.js'></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+
+        html,
+        body {
+            height: 80%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #infowindow-content {
+            display: none;
+        }
+
+        #map #infowindow-content {
+            display: inline;
+        }
+
+    </style>
+
 </head>
+
 <body>
     <!-- Here is the main menu added to the page -->
     {% if user.is_authenticated %}
-    <div id="MenuAppAuth"></div> 
-    {% render_bundle 'vendors' %} 
-    {% render_bundle 'MenuAppAuth' %}
-    {% else %}
-<div id="MenuApp"></div> 
-{% render_bundle 'vendors' %} 
-{% render_bundle 'MenuApp' %}
-<p>You are not logged in</p>
-<!-- Lägg till pop up med meddelande  -->
+    <div id="MenuAppAuth"></div>
+    {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %} {% else %}
+    <div id="MenuApp"></div>
+    {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
+    <p>You are not logged in</p>
+    <!-- Lägg till pop up med meddelande  -->
     {% endif %}
 
-    <h3> Detta är Toolgate Maps flik för kartan. Här ska du kunna söka på platser och annat kul. </h3> <br> {% leaflet_map "gis" callback="window.propertyMarkerLayer" %}
-    <!-- Här läggs kartan in. Det kör funktionen propertyMarkerLayer -->
-    <script type="text/javascript">
+    <div id="MenuApp"></div> 
+    
+    <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <br><h4>Text</h4>
+    <div id="map"></div>
+    
+    
 
-        function propertyMarkerLayer(map, options) {
-            var dataSourceWaypoints = 'waypoints_data';
+    <script>
+        var map;
 
-            //            function clickMarker(feature, layer) {
-            //                layer.on('click', function(e) {
-            //                    var thePopup = "area: "+e.target.feature.properties.area + 'br' + "text";
-            //                    layer.bindPopup(thePopup).openPopup(e.latlan);
-            //                });
-            //            }
-
-            var markerLayer = L.geoJson(null, {
-                onEachFeature: function(feature, layer) {
-                    layer.on('click', function(e) {
-                        var thePopup = "<h4>" + e.target.feature.properties.fastighetsbeteckning +"</h4>" +
-                        "<br> Ägare: " +
-                        "<br> Area: " + e.target.feature.properties.area + " m^2" +
-                        "<br> Köpeskilling fast egendom: " +
-                        "<br> Köpeskilling lös egendom: ";
-                        layer.bindPopup(thePopup).openPopup(e.latlan);
-                    });
+        function initMapAndLayers() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 5,
+                center: {
+                    lat: 58.5,
+                    lng: 17
                 }
             });
+
+            // NOTE: This uses cross-domain XHR, and may not work on older browsers. Från Google själv
+            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+
+            map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
+            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
+           // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
             
-            $.getJSON(dataSourceWaypoints, function(data) {
-                markerLayer.addData(data);
-            })
-            markerLayer.addTo(map);
 
-            var dataSourcePunkter = 'punkters_data';
-            $.getJSON(dataSourcePunkter, function(data) {
-                L.geoJSON(data, {
-                    pointToLayer: function(feature, latlng) {
-                        return L.circleMarker(latlng, geojsonMarkerOptions);
-                        //return L.circleMarker(latlng);
+            map.data.setStyle({ // Gör linjerna smala. Ingrid
+                strokeWeight: 0.5,
+                strokeColor: "#FF0000",
+//                strokeOpacity: 0.5, //tar bort markers
+            });
+
+
+
+            function addMarkers() {
+                var marker = new google.maps.Marker({
+                    position: {
+                        lat: 60.062,
+                        lng: 17.0773
+                    },
+                    icon: {
+                        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                        scale: 6
+                    },
+                    map: map
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "statiskt placerad markör"
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+            }
+
+            function createSearchBoxCities() {
+                var input = document.getElementById('pac-input');
+                var searchBox = new google.maps.places.SearchBox(input);
+                //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                // Bias the SearchBox results towards current map's viewport.
+                map.addListener('bounds_changed', function() {
+                    searchBox.setBounds(map.getBounds());
+                });
+
+                var markers = [];
+                // Listen for the event fired when the user selects a prediction and retrieve
+                // more details for that place.
+                searchBox.addListener('places_changed', function() {
+                    var places = searchBox.getPlaces();
+
+                    if (places.length == 0) {
+                        return;
                     }
-                }).addTo(map);
-            })
 
-            var geojsonMarkerOptions = {
-                radius: 7,
-                fillColor: "#f44256",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            };
+                    // Clear out the old markers.
+                    markers.forEach(function(marker) {
+                        marker.setMap(null);
+                    });
+                    markers = [];
 
-            //            var dataSourceProperty = 'property_data';
-            //            $.getJSON(dataSourceProperty, function(data) {
-            //                L.geoJSON(data).addTo(map);
-            //
-            //            })
+                    // For each place, get the icon, name and location.
+                    var bounds = new google.maps.LatLngBounds();
+                    places.forEach(function(place) {
+                        if (!place.geometry) {
+                            console.log("Returned place contains no geometry");
+                            return;
+                        }
 
-
-
-            //                L.geoJSON(data, {
-            //            style: function(feature) {
-            //                return {
-            //                    color: feature.properties.color
-            //                };
-            //            }
-            //        }).bindPopup(function(layer) {
-            //            return layer.feature.properties.description;
-            //        }).addTo(map);
+                        if (place.geometry.viewport) {
+                            // Only geocodes have viewport.
+                            bounds.union(place.geometry.viewport);
+                        } else {
+                            bounds.extend(place.geometry.location);
+                        }
+                    });
+                    map.fitBounds(bounds);
+                });
+            }
+            
+            addMarkers();   
+            createSearchBoxCities();
         }
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI&libraries=places&callback=initMapAndLayers">
+
+
     </script>
 </body>
+
 </html>
 {% endblock %}
