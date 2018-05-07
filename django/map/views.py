@@ -24,6 +24,10 @@ def waypoint_datasets(request):
     punkter = serialize('geojson', Waypoint.objects.all())
     return HttpResponse(punkter, content_type='json')
 
+def property_datasets(request):
+    punkter = serialize('geojson', Property.objects.all())
+    return HttpResponse(punkter, content_type='json')
+
 def propertyBoarder_datasets(request):
     punkter = serialize('geojson', PropertyBoarder.objects.all())
     return HttpResponse(punkter, content_type='json')
