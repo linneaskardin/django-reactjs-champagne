@@ -1,17 +1,10 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% block main %}
-<!doctype html>
+<!DOCTYPE html>
 <html>
-{% load static %} {% load leaflet_tags %}
-<!-- Ingird: vad gör denna? -->
 
 <head>
-    <title> Toolgate Maps - Map</title>
-    {{ form.media }}
+    <title>Data Layer: Simple</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <script type="text/javescript" src='% static dist/leaflet.ajax.js'></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
-
     <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -37,30 +30,20 @@
             display: inline;
         }
 
+
     </style>
 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
 </head>
 
 <body>
-    <!-- Here is the main menu added to the page -->
-    {% if user.is_authenticated %}
-    <div id="MenuAppAuth"></div>
-    {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %} {% else %}
-    <div id="MenuApp"></div>
-    {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
-    <p>You are not logged in</p>
-    <!-- Lägg till pop up med meddelande  -->
-    {% endif %}
-
+    
     <div id="MenuApp"></div> 
     
     <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <br><h4>Text</h4>
     <div id="map"></div>
-    
-    
-
     <script>
         var map;
 
@@ -168,4 +151,3 @@
 </body>
 
 </html>
-{% endblock %}
