@@ -7,8 +7,10 @@
 
 {% if user.is_authenticated %}
 <div id="MenuAppAuth"></div> 
+
 {% render_bundle 'vendors' %} 
 {% render_bundle 'MenuAppAuth' %}
+
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
