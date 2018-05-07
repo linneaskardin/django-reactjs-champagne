@@ -41,7 +41,11 @@ class PropertyOwner(models.Model):
 class Property(models.Model):
     med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
+    coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
+    coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
+    class Meta:
+        ordering = ('coord_n', 'coord_e',) # Order by x Coord.
     def __unicode__(self):
         return '%s %s %s' % (self.med_coord.x, self.med_coord.y)
     
