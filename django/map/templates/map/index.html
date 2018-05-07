@@ -81,9 +81,9 @@
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
 
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
-            console.log('före')
+
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
-            console.log('efter')
+
             map.data.addListener('click', function(event) {
                 document.getElementById('info-box').textContent =
                     event.feature.getProperty('coord_e');
