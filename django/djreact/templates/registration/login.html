@@ -9,16 +9,19 @@
 {% render_bundle 'vendors' %} 
 {% render_bundle 'MenuApp' %}
 <div class="container">
-
-<h2>Logga In</h2>
-<form method="post">
-  {% bootstrap_form form %}
-  {% csrf_token %}
-  {% buttons %}
-  <button type="submit" class="btn btn-primary center-block">Logga In</button>
-  {% endbuttons %}
-</form>
-
+  <div class="row">
+    <div class="col-lg-6" style="background-color:lightgrey;">
+      <h2>Logga In</h2>
+      <form method="post">
+        {% bootstrap_form form %}
+        {% csrf_token %}
+        {% buttons %}
+        <button type="submit" class="btn btn-primary center-block">Logga In</button>
+        {% endbuttons %}
+      </form>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
+
