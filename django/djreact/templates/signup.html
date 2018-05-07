@@ -14,14 +14,11 @@
 <div class="container">
 <h2>Skapa konto</h2>
 <div class="row">
-<div class="col-sm col-"> 
+<div class="col-sm-6"> 
   <form method="post">
 <!-- This row creates the forms -->
     {% bootstrap_form form %}
     {% csrf_token %}
-    {% buttons %}
-    <button type="submit" class="btn btn-primary center-block">Skapa konto</button>
-    {% endbuttons %}
   </form>
 </div>
 <div class="col-sm-6" style="background-color:lightgrey;">
@@ -29,9 +26,19 @@
     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.  
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+
+    <div class="form-check">   <br>
+        <label class="form-check-label">
+          <input type="checkbox" class="form-check-input">
+          Jag gokänner Toolgate Maps användarvillkor
+        </label>
+      </div><br>
   </div>
   </div>
+  {% buttons %}
+  <button type="submit" class="btn btn-primary center-block">Skapa konto</button>
+  {% endbuttons %}
   </div>
 
 {% endblock %}
