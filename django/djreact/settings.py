@@ -102,11 +102,11 @@ LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'postgres4I',
+        'NAME': 'postgres8',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
