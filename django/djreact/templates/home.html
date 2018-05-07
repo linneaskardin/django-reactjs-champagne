@@ -5,14 +5,16 @@
 
 {% block main %}
 
-<div id="MenuApp"></div> 
-{% render_bundle 'vendors' %} 
-{% render_bundle 'MenuApp' %}
-
 {% if user.is_authenticated %}
+<div id="MenuAppAuth"></div> 
+{% render_bundle 'vendors' %} 
+{% render_bundle 'MenuAppAuth' %}
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
+<div id="MenuApp"></div> 
+{% render_bundle 'vendors' %} 
+{% render_bundle 'MenuApp' %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
   <a href="{% url 'signup' %}">signup</a>

@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from django.template import loader
 from django.http import HttpResponse
-from .models import Punkt, Waypoint, Property, PropertyBoarder
+from .models import Punkt, Waypoint
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize

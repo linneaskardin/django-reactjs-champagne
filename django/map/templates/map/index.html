@@ -16,9 +16,17 @@
 </head>
 <body>
     <!-- Here is the main menu added to the page -->
-        <div id="MenuApp"></div> 
-        {% render_bundle 'vendors' %} 
-        {% render_bundle 'MenuApp' %}
+    {% if user.is_authenticated %}
+    <div id="MenuAppAuth"></div> 
+    {% render_bundle 'vendors' %} 
+    {% render_bundle 'MenuAppAuth' %}
+    {% else %}
+<div id="MenuApp"></div> 
+{% render_bundle 'vendors' %} 
+{% render_bundle 'MenuApp' %}
+<p>You are not logged in</p>
+<!-- Lägg till pop up med meddelande  -->
+    {% endif %}
 
     <h3> Detta är Toolgate Maps flik för kartan. Här ska du kunna söka på platser och annat kul. </h3> <br> {% leaflet_map "gis" callback="window.propertyMarkerLayer" %}
     <!-- Här läggs kartan in. Det kör funktionen propertyMarkerLayer -->
