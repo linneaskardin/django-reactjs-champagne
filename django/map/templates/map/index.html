@@ -36,6 +36,11 @@
         #map #infowindow-content {
             display: inline;
         }
+        
+        #info-box{
+            height: 20px; /*Ingrid: change to something better*/
+            background-color: aqua; /*Ingrid: change to something better*/
+        }
 
     </style>
 
@@ -52,14 +57,19 @@
     <!-- Lägg till pop up med meddelande  -->
     {% endif %}
 
-    <div id="MenuApp"></div> 
-    
+    <div id="MenuApp"></div>
+
     <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-    <br><h4>Text</h4>
+    <br>
+    <h4>Text</h4>
     <div id="map"></div>
+    <div id="info-box"></div>
     
     
+    
+
+
 
     <script>
         var map;
@@ -75,19 +85,20 @@
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers. Från Google själv
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
-           // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
-            
+            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
+
+
+            map.data.addListener('click', function(event) {
+                document.getElementById('info-box').textContent =
+                    event.feature.getProperty('coord_e');
+            });
 
             map.data.setStyle({ // Gör linjerna smala. Ingrid
                 strokeWeight: 0.5,
                 strokeColor: "#FF0000",
-//                strokeOpacity: 0.5, //tar bort markers
             });
-
-
 
             function addMarkers() {
                 var marker = new google.maps.Marker({
@@ -155,8 +166,8 @@
                     map.fitBounds(bounds);
                 });
             }
-            
-            addMarkers();   
+
+            addMarkers();
             createSearchBoxCities();
         }
 

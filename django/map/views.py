@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from django.template import loader
 from django.http import HttpResponse
-from .models import Punkt, Waypoint, PropertyBoarder
+from .models import Punkt, Waypoint, Property, PropertyBoarder
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
@@ -21,11 +21,12 @@ def punkt_datasets(request):
     return HttpResponse(punkter, content_type='json')
 
 def waypoint_datasets(request):
-    punkter = serialize('geojson', Waypoint.objects.all())
-    return HttpResponse(punkter, content_type='json')
+    waypoints = serialize('geojson', Waypoint.objects.all())
+    return HttpResponse(waypoints, content_type='json')
 
 def property_datasets(request):
-    punkter = serialize('geojson', Property.objects.all())
+    #punkter = serialize('geojson', Property.objects.all())
+    punkter = serialize('geojson', Property.objects.filter(pk__gte=28800)) #gte = greater/equal than, lte = less/equal than
     return HttpResponse(punkter, content_type='json')
 
 def propertyBoarder_datasets(request):
