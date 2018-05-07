@@ -16,6 +16,7 @@ urlpatterns=[
     re_path('properties_data/', views.property_datasets, name='laddapunkter'),
     
     re_path('punkter_pa_googlekarta', views.googleKarta),
+]
 
 
 print("urls.py -map 2")
