@@ -23,7 +23,7 @@ class Command(BaseCommand):
             wgs_e, wgs_n = pyproj.transform(SWEREF99,wgs84, row[6], row[5])
             # Create Point
             pnt = Point(wgs_e, wgs_n)
-            d[row[3]] = {'med_coord':pnt} # Populate dictionary
+            d[row[3]] = {'med_coord':pnt, 'coord_e':row[6], 'coord_n':row[5]} # Populate dictionary
         csvkoord.close() # VERY important to close!
         # Import data for Property Owners
         csvlag = open('LAGFP_35S.txt','r', encoding='mac_roman',newline='')
@@ -45,7 +45,8 @@ class Command(BaseCommand):
             firstname=z.get(key,{'fornamn':'NA'})['fornamn'],surname=z.get(key,{'efternamn':'NA'})['efternamn'],
             coname=z.get(key,{'firmanamn':'NA'})['firmanamn'],jurform=z.get(key,{'jurform':'NA'})['jurform'])
             q.save()
-            y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'])
+            y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+            coord_n=z.get(key,{'coord_n':'NA'})['coord_n'])
             y.save()
             y.owners.add(q)
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE
