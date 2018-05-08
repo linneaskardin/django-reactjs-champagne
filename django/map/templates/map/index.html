@@ -56,7 +56,7 @@
     {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
 
     <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <input id="citySearch" class="controls" type="text" placeholder="Search Box">
     <br>
     <h4>Text</h4>
     <div id="map"></div>
@@ -109,7 +109,7 @@
             });
 
             function createSearchBoxCities() {
-                var input = document.getElementById('pac-input');
+                var input = document.getElementById('citySearch');
                 var searchBox = new google.maps.places.SearchBox(input);
                 //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
