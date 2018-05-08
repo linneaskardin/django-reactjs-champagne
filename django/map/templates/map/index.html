@@ -1,27 +1,24 @@
 {% extends "base.html" %} {% load render_bundle from webpack_loader %} {% block main %}
 <!doctype html>
 <html>
-{% load static %} {% load leaflet_tags %}
-<!-- Ingird: vad gör denna? -->
+{% load static %} {% load leaflet_tags %} <!-- Ingird: vad gör denna? Behövs ev ej -->
 
 <head>
     <title> Toolgate Maps - Map</title>
     {{ form.media }}
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <script type="text/javescript" src='% static dist/leaflet.ajax.js'></script>
+    <!--<script type="text/javescript" src='% static dist/leaflet.ajax.js'></script>-->
     <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
 
     <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-
         #map {
             height: 100%;
         }
 
         /* Optional: Makes the sample page fill the window. */
-
         html,
         body {
             height: 80%;
@@ -67,13 +64,8 @@
     <h4>Text</h4>
     <div id="map"></div>
     <div id="info-box">
-        <h4>Hej hej</h4>
+        <h4>Här visas ägaren sen när du tryckt. </h4>
     </div>
-
-
-
-
-
 
     <script>
         var map;
@@ -87,66 +79,16 @@
                 }
             });
 
-            // NOTE: This uses cross-domain XHR, and may not work on older browsers. Från Google själv
+            // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
-            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyOwners_data/');
-
-            //    text = "hej";
-            // var obj = JSON.parse(text);
-
-            const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
-            $.ajax({
-                url: ownersURL,
-                success: function(result) {
-                    var ownerObj = result;
-
-
-                    console.log(ownerObj);
-                    //console.log("features: " + ownerObj.features);
-                    console.log("specifik feature: " + ownerObj.features[1]);
-                    console.log(": " + ownerObj.features[1].properties["pk"]);
-
-
-                    map.data.addListener('click', function(event) {
-                        var infoText = "Ägare: start";
-                        var ownerID = event.feature.getProperty('owners');
-                        console.log("ownerID: " + ownerID);
-                        infotext = ownerID;
-
-
-                        var i;
-                        for (i = 0; i < ownerObj.features.length; i++) {
-                            if (ownerObj.features[i].properties["pk"]==ownerID){
-                                console.log("DE ÄR LIKA");
-                                firstName = ownerObj.features[i].properties["firstname"];
-                                surName = ownerObj.features[i].properties["surname"];
-                                companyName = ownerObj.features[i].properties["coname"];
-                                juridicalForm = ownerObj.features[i].properties["jurform"];
-                                reg_no = ownerObj.features[i].properties["reg_no"]+" pattar";
-                                break;
-                                }                            
-                        }
-
-                        document.getElementById('info-box').textContent = firstName +" "+ surName +" "+ companyName +" "+ juridicalForm +" "+ reg_no;
-                    });
-
-                }
-            });
-
-
-
-
-
-
 
             map.data.setStyle({ // Styling of boarderlines. Ingrid
                 strokeWeight: 0.5,
                 strokeColor: "#FF0000",
             });
-
 
             function createSearchBoxCities() {
                 var input = document.getElementById('pac-input');
@@ -193,38 +135,43 @@
                 });
             }
 
-            function addMarkers() {
-                var marker = new google.maps.Marker({
-                    position: {
-                        lat: 60.062,
-                        lng: 17.0773
-                    },
-                    icon: {
-                        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                        scale: 6
-                    },
-                    map: map
-                });
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: "statiskt placerad markör"
-                });
-
-                marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                });
-            }
-
-
-            addMarkers();
             createSearchBoxCities();
         }
+        
+        const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+        $.ajax({
+            url: ownersURL,
+            success: function(result) {
+                var ownerObj = result; //The ownerJson as an object. IM
+
+                //                    console.log(ownerObj);
+                //                    console.log("specifik feature: " + ownerObj.features[1]);
+                //                    console.log(": " + ownerObj.features[1].properties["pk"]);
+
+                map.data.addListener('click', function(event) {
+                    var ownerID = event.feature.getProperty('owners'); //IM: this is the owners id to the clicked property
+                    console.log("klickat ownerID: " + ownerID);
+
+                    var i;
+                    for (i = 0; i < ownerObj.features.length; i++) { 
+                        if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
+                            console.log("Det finns en träff med ägare och property");
+                            firstName = ownerObj.features[i].properties["firstname"];
+                            surName = ownerObj.features[i].properties["surname"];
+                            companyName = ownerObj.features[i].properties["coname"];
+                            juridicalForm = ownerObj.features[i].properties["jurform"];
+                            reg_no = ownerObj.features[i].properties["reg_no"];
+                            document.getElementById('info-box').textContent = "Förnamn" + firstName + " Efternamn " + surName + " " + companyName + " " + juridicalForm + " " + reg_no;
+                            break;
+                        }
+                    }
+                });
+            }
+        });
 
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI&libraries=places&callback=initMapAndLayers">
-
-
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI&libraries=places&callback=initMapAndLayers"></script>
+    <!--{ % block javascript %}-->
 </body>
 
 </html>
