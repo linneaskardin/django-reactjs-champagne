@@ -35,7 +35,8 @@ def propertyOwner_datasets(request):
     return HttpResponse(punkter, content_type='json')
 
 def propertyBoarder_datasets(request):
-    punkter = serialize('geojson', PropertyBoarder.objects.all())
+    #punkter = serialize('geojson', PropertyBoarder.objects.all())
+    punkter = serialize('geojson', PropertyBoarder.objects.filter(pk__lte=1000))
     return HttpResponse(punkter, content_type='json')
 
 def googleKarta(request):

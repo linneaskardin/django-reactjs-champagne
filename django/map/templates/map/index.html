@@ -83,11 +83,8 @@
     <p>Please login to see this page.</p>
     {% endif %}
 
-
-
     <script>
         var map;
-
         function initMapAndLayers() {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 5,
@@ -98,14 +95,14 @@
             });
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
+
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
             map.data.setStyle({ // Styling of boarderlines. Ingrid
                 strokeWeight: 0.5,
-                strokeColor: "#FF0000",
+                strokeColor: "#0000ff",
             });
 
             function createSearchBoxCities() {
@@ -152,7 +149,6 @@
                     map.fitBounds(bounds);
                 });
             }
-
             createSearchBoxCities();
         }
 
