@@ -1,17 +1,28 @@
 <!-- templates/registration/login.html -->
 {% extends "base.html" %}
+{% load bootstrap4 %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Login{% endblock %}
 
 {% block main %}
-<div id="MenuApp"></div> 
-{% render_bundle 'vendors' %} 
+<div id="MenuApp"></div>
+{% render_bundle 'vendors' %}
 {% render_bundle 'MenuApp' %}
+<div class="container">
+ <div class="row">
+     <div class="center-block col-lg-4" style="float: none; background-color: white">
+     <br><h2>Logga In</h2>
+     <form method="post">
+       {% bootstrap_form form %}
+       {% csrf_token %}
+       {% buttons %}
+       <button type="submit" class="btn btn-primary center-block">Logga In</button>
+       {% endbuttons %}
+     </form>
+     <br>
+   </div>
+ </div>
+</div>
 
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
 {% endblock %}
+

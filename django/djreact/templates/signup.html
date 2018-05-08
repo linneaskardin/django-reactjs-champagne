@@ -1,17 +1,54 @@
 <!-- templates/signup.html -->
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Sign Up{% endblock %}
 
-{% block main %}
-<div id="MenuApp"></div> 
-{% render_bundle 'vendors' %} 
-{% render_bundle 'MenuApp' %}
 
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
-  </form>
+{% block main %}
+<div id="MenuApp"></div>
+{% render_bundle 'vendors' %}
+{% render_bundle 'MenuApp' %}
+<div class="container" style="background-color:white;">
+ <div class="row">
+   <div class="col-sm-6">
+     <h2>Sign up</h2>
+       <form method="post">
+       <!-- This row creates the forms -->
+       {% csrf_token %}
+       {% bootstrap_form form %}
+       {% buttons %}
+       <div class="form-group">
+           <div class="form-check">
+             <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+             <label class="form-check-label" for="invalidCheck">
+               Jag godkänner Toolgate Maps användarvillkor
+             </label>
+             <div class="invalid-feedback">
+               Gokännande av Tollgate Maps användarvillkor är ett krav!
+             </div>
+           </div>
+         </div>
+       <button type="submit" class="btn btn-primary center-block">Skapa konto</button>
+       {% endbuttons %}
+     </form>
+   </div>
+
+ <div class="col-sm-4" style="background-color:white;">
+     <h3>Användarvillkor</h3>
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         <br>
+         <br>
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+         Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+ </div>
+</div>  
+</div>
 {% endblock %}
+
+
