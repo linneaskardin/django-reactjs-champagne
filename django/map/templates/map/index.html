@@ -1,7 +1,9 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% block main %}
+{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
+
 <!doctype html>
 <html>
-{% load static %} {% load leaflet_tags %} <!-- Ingird: vad gör denna? Behövs ev ej -->
+{% load static %} {% load leaflet_tags %}
+<!-- Ingird: vad gör denna? Behövs ev ej -->
 
 <head>
     <title> Toolgate Maps - Map</title>
@@ -14,11 +16,13 @@
     <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
+
         #map {
             height: 100%;
         }
 
         /* Optional: Makes the sample page fill the window. */
+
         html,
         body {
             height: 80%;
@@ -49,23 +53,37 @@
     <!-- Here is the main menu added to the page -->
     {% if user.is_authenticated %}
     <div id="MenuAppAuth"></div>
-    {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %} {% else %}
-    <div id="MenuApp"></div>
-    {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
-    <p>You are not logged in</p>
-    <!-- Lägg till pop up med meddelande  -->
-    {% endif %}
-
-    <div id="MenuApp"></div>
+    {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
 
     <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
-    <input id="pac-input" class="controls" type="text" placeholder="Sök på adress eller stad">
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <br>
     <h4>Text</h4>
     <div id="map"></div>
+    <div class="col-sm-6" style="background-color: white">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="card-title">Fastighetsinformation</h3><br>
+                <p>
+                    <li></li><br>
+                    <li>Data över hela Sverige</li><br>
+                    <li>bla bla bla</li><br>
+                </p>
+            </div>
+        </div>
+    </div>
     <div id="info-box">
         <h4>Här visas ägaren sen när du tryckt. </h4>
     </div>
+    {% else %}
+
+    <div id="MenuApp"></div>
+    {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
+    <p>You are not logged in</p>
+    <p>Please login to see this page.</p>
+    {% endif %}
+
+
 
     <script>
         var map;
@@ -137,7 +155,7 @@
 
             createSearchBoxCities();
         }
-        
+
         const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
         $.ajax({
             url: ownersURL,
@@ -153,7 +171,7 @@
                     console.log("klickat ownerID: " + ownerID);
 
                     var i;
-                    for (i = 0; i < ownerObj.features.length; i++) { 
+                    for (i = 0; i < ownerObj.features.length; i++) {
                         if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
                             console.log("Det finns en träff med ägare och property");
                             firstName = ownerObj.features[i].properties["firstname"];
