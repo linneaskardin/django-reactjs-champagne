@@ -39,10 +39,9 @@
         }
 
         #info-box {
-            height: 20px;
-            /*Ingrid: change to something better*/
-            background-color: yellow;
-            /*Ingrid: change to something better*/
+            height: auto;
+            background-color: white;
+            width: 50%;
         }
 
     </style>
@@ -60,20 +59,12 @@
     <br>
     <h4>Text</h4>
     <div id="map"></div>
-    <div class="col-sm-6" style="background-color: white">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="card-title">Fastighetsinformation</h3><br>
-                <p>
-                    <li></li><br>
-                    <li>Data över hela Sverige</li><br>
-                    <li>bla bla bla</li><br>
-                </p>
-            </div>
-        </div>
-    </div>
     <div id="info-box">
-        <h4>Här visas ägaren sen när du tryckt. </h4>
+        <h3> Fastighetsinformation: </h3>
+        <h5> Namn: </h5>
+        <h5> Företag: </h5>
+        <h5> Juridisk form: </h5>
+        <h5> Registration number: </h5>
     </div>
     {% else %}
 
@@ -83,8 +74,7 @@
     <p>Please login to see this page.</p>
     {% endif %}
 
-
-
+    <!-- Här skapas kartan och sökrutan samt det som hamnar i info-box som läggs in i id="map", -->
     <script>
         var map;
 
