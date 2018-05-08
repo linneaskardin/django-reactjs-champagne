@@ -1,17 +1,44 @@
 <!-- templates/signup.html -->
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Sign Up{% endblock %}
 
 {% block main %}
+<!-- Adds the menu to the sign up page -->
 <div id="MenuApp"></div> 
 {% render_bundle 'vendors' %} 
 {% render_bundle 'MenuApp' %}
-
-  <h2>Sign up</h2>
+<!-- Add background picture -->
+<!-- Change size etc on the sign up form -->
+<div class="container">
+<h2>Skapa konto</h2>
+<div class="row">
+<div class="col-sm-6"> 
   <form method="post">
+<!-- This row creates the forms -->
+    {% bootstrap_form form %}
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
   </form>
+</div>
+<div class="col-sm-6" style="background-color:lightgrey;">
+  <h4>Användarvillkor</h4>
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto. 
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
+
+    <div class="form-check">   <br>
+        <label class="form-check-label">
+          <input type="checkbox" class="form-check-input">
+          Jag gokänner Toolgate Maps användarvillkor
+        </label>
+      </div><br>
+  </div>
+  </div>
+  {% buttons %}
+  <button type="submit" class="btn btn-primary center-block">Skapa konto</button>
+  {% endbuttons %}
+  </div>
+
 {% endblock %}
