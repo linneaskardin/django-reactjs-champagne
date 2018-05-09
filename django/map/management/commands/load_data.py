@@ -40,15 +40,6 @@ class Command(BaseCommand):
         for row in readera:
             f[row[3]] = {'area':row[7]}
         csvar.close()
-        w = {}
-#        for key,value in d.items():
-#            if key in f:
-#                value = {**f[key], **d[key]} # pull values and merge them
-#                w[key] = value # add the new values to z
-#            else:
-#                f[key] = None
-#                value = {**f[key], **d[key]}
-#                w[key] = value
         z = {}
         for key,value in e.items():# iterator over e
             if key in d: # some PropertyOwners don't have coordinates
