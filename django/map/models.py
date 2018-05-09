@@ -33,7 +33,7 @@ class PropertyOwner(models.Model):
     # Info regaring individuals. Might be omitted later /CE
     firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
     surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
-    
+
     class Meta:
         ordering = ('coname', 'surname',) # Order by coname. Makes blank conames come first so it's not optimal /CE
     def __str__(self): # Good practise to use. Converts object to string /CE
@@ -42,6 +42,7 @@ class PropertyOwner(models.Model):
 class Property(models.Model):
     med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
+    area = models.DecimalField('Area',max_digits=24,decimal_places=12, default = 0)
     coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
     coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
@@ -49,7 +50,7 @@ class Property(models.Model):
         ordering = ('coord_n', 'coord_e',) # Order by x Coord.
     def __unicode__(self):
         return '%s %s %s' % (self.med_coord.x, self.med_coord.y)
-    
+
 class PropertyBoarder(models.Model):
     internid = models.BigIntegerField()
     detaljtyp = models.CharField(max_length=10)
@@ -61,6 +62,6 @@ class PropertyBoarder(models.Model):
     undskala = models.BigIntegerField()
     knid = models.IntegerField()
     geom = models.MultiLineStringField(srid=4326)
-    
+
     def __unicode__(self):
         return self.internid
