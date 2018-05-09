@@ -84,6 +84,7 @@
 
     <script>
         var map;
+
         function initMapAndLayers() {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 5,
@@ -92,6 +93,30 @@
                     lng: 17
                 }
             });
+            
+           image2='https://maps.google.com/mapfiles/kml/shapes/library_maps.png'; image1='https://www.google.com/mapfiles/marker_green.png';
+            testMarker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                icon: image1,
+                animation: google.maps.Animation.DROP,
+                position: {
+                    lat: 59.327,
+                    lng: 23.067
+                }
+            });
+            testMarker.addListener('click', toggleBounce);
+
+            function toggleBounce() {
+                if (testMarker.getAnimation() !== null) {
+                    testMarker.setIcon(image1);
+                    console.log(testMarker.icon);
+                } else {
+                    testMarker.setIcon(image2);
+                    console.log(testMarker.icon);
+                }
+            }
+
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
@@ -174,9 +199,9 @@
                             companyName = ownerObj.features[i].properties["coname"];
                             juridicalForm = ownerObj.features[i].properties["jurform"];
                             reg_no = ownerObj.features[i].properties["reg_no"];
-                        
-                            document.getElementById('info-box').innerHTML = "<h4> Förnamn" + firstName +"<br/>"+ "<h3> Efternamn " + surName + " " + companyName + "<br> " + juridicalForm + " " + reg_no;
-                            
+
+                            document.getElementById('info-box').innerHTML = "<h4> Förnamn" + firstName + "<br/>" + "<h3> Efternamn " + surName + " " + companyName + "<br> " + juridicalForm + " " + reg_no;
+
                         }
                     }
                 });
