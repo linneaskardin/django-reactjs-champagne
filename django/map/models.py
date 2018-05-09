@@ -52,7 +52,7 @@ class Property(models.Model):
     
 class PropertyBoarder(models.Model):
     internid = models.BigIntegerField()
-    detaljtyp = models.CharField(max_length=10)
+    detaljtyp = models.CharField(max_length=11)
     gdat = models.CharField(max_length=16)
     adat = models.CharField(max_length=16)
     xyfel = models.BigIntegerField()
