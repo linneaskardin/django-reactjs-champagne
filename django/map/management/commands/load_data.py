@@ -34,27 +34,41 @@ class Command(BaseCommand):
             'fornamn':row[23], 'efternamn':row[25],'irfast':row[17],
             'jurform':row[26], 'firmanamn':row[27]}
         csvlag.close()
+        csvar = open('data/AREAL_08A.txt','r', encoding='mac_roman',newline='')
+        readera = csv.reader(csvar, delimiter=';')
+        f={}
+        for row in readera:
+            f[row[3]] = {'area':row[7]}
+        csvar.close()
+        w = {}
+#        for key,value in d.items():
+#            if key in f:
+#                value = {**f[key], **d[key]} # pull values and merge them
+#                w[key] = value # add the new values to z
+#            else:
+#                f[key] = None
+#                value = {**f[key], **d[key]}
+#                w[key] = value
         z = {}
         for key,value in e.items():# iterator over e
             if key in d: # some PropertyOwners don't have coordinates
-                value = {**d[key], **e[key]} # pull values and merge them
+                if key in f:
+                    value = {**d[key],**e[key],**f[key]}
+                else:
+                    value = {**d[key], **e[key]} # pull values and merge them
                 z[key] = value # add the new values to z
-        csvar = open('data/AREAL_08A.txt','r', encoding='mac_roman',newline='')
-        readera = csv.reader(csvar, delimiter=';')
-        f={} # create dictionary to connect data
-        for row in readerl:
-            e[row[20]] = {'org_nr':row[21],
-            'fornamn':row[23], 'efternamn':row[25],'irfast':row[17],
-            'jurform':row[26], 'firmanamn':row[27]}
-        csvar.close()
         # populate database tables
         for key,value in z.items():
             q = PropertyOwner(reg_no=z.get(key,{'org_nr':'NA'})['org_nr'],
             firstname=z.get(key,{'fornamn':'NA'})['fornamn'],surname=z.get(key,{'efternamn':'NA'})['efternamn'],
             coname=z.get(key,{'firmanamn':'NA'})['firmanamn'],jurform=z.get(key,{'jurform':'NA'})['jurform'])
             q.save()
-            y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-            coord_n=z.get(key,{'coord_n':'NA'})['coord_n'])
+            if key in f:
+                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'],area=z.get(key,{'area':'NA'})['area'])
+            else:
+                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'],area=0) # Becomes 0 when info of the area doesn't exist
             y.save()
             y.owners.add(q)
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE
