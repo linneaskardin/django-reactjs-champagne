@@ -1,4 +1,8 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} 
+{% load render_bundle from webpack_loader %} 
+{% load bootstrap4 %} 
+{% block title %}Index{% endblock %} 
+{% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -42,6 +46,7 @@
 
         #info-box {
             height: auto;
+            width: 30%;
             background-color: white;
             text-indent: 15px;
             margin: auto;
@@ -71,7 +76,7 @@
     {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
     <div id="intro-text">
         <h3>Toolgate Maps </h3>
-        <h5 > Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h5>
+        <p >Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
     </div>
 
     <input id="citySearch" class="controls" type="text" placeholder="Sök (address, stad..)">
@@ -81,8 +86,13 @@
 
     <div id="MenuApp"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
-    <p>You are not logged in</p>
-    <p>Please login to see this page.</p>
+    <div class="jumbotron text-center">
+            <h1>Du är inte inloggad!</h1> 
+            <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
+            <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
+
+          </div>
     {% endif %}
 
     <!-- Här skapas kartan och sökrutan samt det som hamnar i info-box som läggs in i id="map", -->
@@ -180,7 +190,7 @@
                             companyName = ownerObj.features[i].properties["coname"];
                             juridicalForm = ownerObj.features[i].properties["jurform"];
                             reg_no = ownerObj.features[i].properties["reg_no"];
-                            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:      " + companyName + " " + "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
+                            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:" + companyName +  "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
                             break;
                         }
                     }

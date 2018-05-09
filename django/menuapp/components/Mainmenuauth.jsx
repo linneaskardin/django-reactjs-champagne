@@ -10,7 +10,8 @@ export default class Mainmenuauth extends React.Component {
      <Nav className="navbar navbar-inverse bg-light">
    <div className="container-fluid">
    <div className="navbar-header">
-     <a className="navbar-brand">Toolgate Maps</a>
+   {/* If you want to at the loggo of toolgate this is the place! */}
+     <a className="navbar-brand"></a>
    </div>
    <ul className="nav navbar-nav">
      <li><a href="/"> Hem </a></li>

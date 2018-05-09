@@ -11,15 +11,15 @@
 
 {% render_bundle 'vendors' %}
 {% render_bundle 'MenuAppAuth' %}
+<div class="jumbotron text-center">
+    <p>Toolgate Maps - Vägen mot ett lättare liv!</p>
+    <h1>Hej {{ user.username }}!</h1>
+    <p>Välkommen till Toolgate Maps! Hoppas du hittar vad du söker!</p>
+    <a href="{% url 'logout' %}"><p>Logga Ut</p></a>
+  </div>
 
- Hi {{ user.username }}!
-   <div class="container text-center">
-     <div class="row">
-       <div class="center-block col-lg-4" style="float: none; background-color:white">
-         <a href="{% url 'logout' %}"><h1>Logga Ut</h1></a>
-       </div>
-     </div>
-   </div>
+
+
 {% else %}
 
 <!-- This will appear if you have NOT signed in -->

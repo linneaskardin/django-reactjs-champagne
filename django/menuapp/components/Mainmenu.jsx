@@ -9,8 +9,9 @@ export default class Mainmenu extends React.Component {
    return (
      <Nav className="navbar navbar-inverse bg-light">
    <div className="container-fluid">
+   {/* If you want to add the loogo for toolgate this is the place!! */}
    <div className="navbar-header">
-     <a className="navbar-brand">Toolgate Maps</a>
+     <a className="navbar-brand"></a> 
    </div>
    <ul className="nav navbar-nav">
      <li><a href="/"> Hem </a></li>
