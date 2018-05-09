@@ -19,10 +19,12 @@
 
         #map {
             height: 100%;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Optional: Makes the sample page fill the window. */
-
         html,
         body {
             height: 80%;
@@ -41,14 +43,22 @@
         #info-box {
             height: auto;
             background-color: white;
-            width: 35%;
-            margin-left: auto;
-            margin-right: auto;
+            text-indent: 15px;
+            margin: auto;
         }
         
-        h3 {
-            text-align: center;
+        #citySearch {
+            margin: 1%;
+            margin-left: 5%;
+            
         }
+        #intro-text{
+            margin-left: 5%;
+            line-height: 10px; 
+            width: 40%;
+
+        }
+
 
     </style>
 
@@ -59,19 +69,14 @@
     {% if user.is_authenticated %}
     <div id="MenuAppAuth"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
-
-    <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
-    <input id="citySearch" class="controls" type="text" placeholder="Search Box">
-    <br>
-    <h4>Text</h4>
-    <div id="map"></div>
-    <div id="info-box">
-        <h3> Fastighetsinformation </h3>
-        <h5> Namn: </h5>
-        <h5> Företag: </h5>
-        <h5> Juridisk form: </h5>
-        <h5> Registration number: </h5>
+    <div id="intro-text">
+        <h3>Toolgate Maps </h3>
+        <h5 > Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h5>
     </div>
+
+    <input id="citySearch" class="controls" type="text" placeholder="Sök (address, stad..)">
+    <div id="map"></div>
+    <div id="info-box"></div>
     {% else %}
 
     <div id="MenuApp"></div>
@@ -175,7 +180,7 @@
                             companyName = ownerObj.features[i].properties["coname"];
                             juridicalForm = ownerObj.features[i].properties["jurform"];
                             reg_no = ownerObj.features[i].properties["reg_no"];
-                            document.getElementById('info-box').textContent = "Förnamn" + firstName + " Efternamn " + surName + " " + companyName + " " + juridicalForm + " " + reg_no;
+                            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:      " + companyName + " " + "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
                             break;
                         }
                     }

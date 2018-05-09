@@ -1,0 +1,24 @@
+<!-- templates/registration/login.html -->
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load render_bundle from webpack_loader %}
+{% block title %}About{% endblock %}
+
+{% block main %}
+{% if user.is_authenticated %}
+<!-- This will appear if you have signed in -->
+<div id="MenuAppAuth"></div> 
+
+{% render_bundle 'vendors' %}
+{% render_bundle 'MenuAppAuth' %}
+<h2>Om Toolgate Maps</h2>
+{% else %}
+
+<!-- This will appear if you have NOT signed in -->
+<div id="MenuApp"></div>
+{% render_bundle 'vendors' %}
+{% render_bundle 'MenuApp' %}
+<h2>Om Toolgate Maps</h2>
+{% endif %}
+{% endblock %}
+

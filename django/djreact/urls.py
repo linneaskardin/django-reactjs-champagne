@@ -25,4 +25,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')), #To use the auth app we need to add it to our project-level urls.py file.The auth app we’ve now included provides us with several authentication views
     path('toolgate_maps/',include('map.urls')),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
 ]
