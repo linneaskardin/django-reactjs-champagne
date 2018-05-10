@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
     'webpack_loader',
     'bootstrap4',
     'corsheaders', # Because of a bug //CE
@@ -107,8 +108,8 @@ LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'postgres5l',
 
+        'NAME': 'postgres4l',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',

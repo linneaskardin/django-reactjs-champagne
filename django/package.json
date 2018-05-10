@@ -19,6 +19,8 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "bootstrap": "^4.1.1",
+    "bootstrap4": "0.0.1-security",
     "es6-promise": "^3.1.2",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.5.1",

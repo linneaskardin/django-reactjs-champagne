@@ -1,13 +1,13 @@
-// Inside the maincontainer the MainMenu-component is placed. 
+// Inside the maincontainer the MainMenu-component is placed.
 import React from "react"
-import MainmenuAuth from "../components/MainmenuAuth"
+import Mainmenuauth from "../components/Mainmenuauth"
 
-export default class MainContainer extends React.Component {
-  render() {
-    return (
-        <div>
-      <MainmenuAuth></MainmenuAuth>
-      </div>
-    )
-  }
+export default class MenuContainerAuth extends React.Component {
+ render() {
+   return (
+       <div>
+     <Mainmenuauth></Mainmenuauth>
+     </div>
+   )
+ }
 }

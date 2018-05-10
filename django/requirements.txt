@@ -1,3 +1,4 @@
 Django==2.0.4
 Fabric==1.10.2
 django-webpack-loader==0.2.4
+django-bootstrap4

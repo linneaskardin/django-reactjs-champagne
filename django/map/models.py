@@ -33,8 +33,9 @@ class PropertyOwner(models.Model):
     # Info regaring individuals. Might be omitted later /CE
     firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
     surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
+    
     class Meta:
-        ordering = ('coname',) # Order by coname. Makes blank conames come first so it's not optimal /CE
+        ordering = ('coname', 'surname',) # Order by coname. Makes blank conames come first so it's not optimal /CE
     def __str__(self): # Good practise to use. Converts object to string /CE
         return (self.coname)
 
