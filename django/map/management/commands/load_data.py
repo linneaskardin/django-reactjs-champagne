@@ -50,15 +50,9 @@ class Command(BaseCommand):
         for key,value in dictOwner.items():# iterator over e
             if key in dictCoord: # some PropertyOwners don't have coordinates
                 if key in dictArea:
-                    value = {**dictCoord[key], **dictOwner[key], **dictPropNo, **dictArea} # pull values and merge them
-#                if key in dictArea and key in dictPropNo:
-#                    value = {**dictCoord[key],**dictOwner[key],**dictArea[key],**dictPropNo[key]}
-#                elif key in dictArea and key not in dictPropNo:
-#                    value = {**dictCoord[key],**dictOwner[key],**dictArea[key]}
-#                elif key not in dictArea and key in dictPropNo:
-#                    value = {**dictCoord[key],**dictOwner[key],**dictPropNo[key]}
+                    value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key]} # pull values and merge them
                 else:
-                    value = {**dictCoord[key], **dictOwner[key], **dictPropNo} # pull values and merge them
+                    value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]} # pull values and merge them
                 z[key] = value # add the new values to z
         # populate database tables
         for key,value in z.items():
@@ -71,9 +65,6 @@ class Command(BaseCommand):
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                 district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
                 unity=z.get(key,{'unity':'NA'})['unity'])
-#            elif key in dictArea and key not in dictPropNo:
-#                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-#                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'])
             else:
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'],area=0,municipality=z.get(key,{'municipality':'NA'})['municipality'],
