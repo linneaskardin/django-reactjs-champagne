@@ -43,6 +43,11 @@ class Property(models.Model):
     med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
     owners = models.ManyToManyField(PropertyOwner)
     area = models.DecimalField('Area',max_digits=24,decimal_places=12, default = 0, null=True)
+    municipality = models.CharField('Kommun', max_length=16, default = '')
+    district = models.CharField('Trakt', max_length=40, default = '')
+    unity = models.CharField('Enhet', max_length=4, default = '')
+    sign = models.CharField('Tecken', max_length=1, default = '', null = True)
+    block = models.CharField('Block', max_length=4, default = '')
     coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
     coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
