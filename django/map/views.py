@@ -31,11 +31,12 @@ def property_datasets(request):
 
 def propertyOwner_datasets(request):
     #punkter = serialize('geojson', Property.objects.all())
-    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=20)) #gte = greater/equal than, lte = less/equal than
+    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
     return HttpResponse(punkter, content_type='json')
 
 def propertyBoarder_datasets(request):
-    punkter = serialize('geojson', PropertyBoarder.objects.all())
+    #punkter = serialize('geojson', PropertyBoarder.objects.all())
+    punkter = serialize('geojson', PropertyBoarder.objects.filter(pk__gte=50000))
     return HttpResponse(punkter, content_type='json')
 
 def googleKarta(request):

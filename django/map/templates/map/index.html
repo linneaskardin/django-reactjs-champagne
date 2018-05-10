@@ -6,7 +6,6 @@
 <!-- Ingird: vad gör denna? Behövs ev ej -->
 
 <head>
-    <title> Toolgate Maps - Map</title>
     {{ form.media }}
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -83,8 +82,6 @@
     <p>Please login to see this page.</p>
     {% endif %}
 
-
-
     <script>
         var map;
 
@@ -96,16 +93,44 @@
                     lng: 17
                 }
             });
+            
+            //********************* THIS IS EXPERIMENTAL PLACE FOR CHANGING MARKER COLOR ******************
+           image2='https://maps.google.com/mapfiles/kml/shapes/library_maps.png'; image1='https://www.google.com/mapfiles/marker_green.png';
+            testMarker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                icon: image1,
+                animation: google.maps.Animation.DROP,
+                position: {
+                    lat: 59.327,
+                    lng: 23.067
+                },
+                showInfo: false
+            });
+            testMarker.addListener('click', toggleBounce);
+
+            function toggleBounce() {
+                if (testMarker.showInfo == false) {
+                    testMarker.setIcon(image1);
+                    console.log("showInfo är "+testMarker.showInfo);
+                    testMarker.showInfo=true;
+                } else {
+                    testMarker.setIcon(image2);
+                    console.log("showInfo är "+testMarker.showInfo);
+                    testMarker.showInfo=false;
+                }
+            }
+            //********************* END CHANGING MARKER COLOR ******************
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+
+            //map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
             map.data.setStyle({ // Styling of boarderlines. Ingrid
                 strokeWeight: 0.5,
-                strokeColor: "#FF0000",
+                strokeColor: "#0000ff",
             });
 
             function createSearchBoxCities() {
@@ -152,7 +177,6 @@
                     map.fitBounds(bounds);
                 });
             }
-
             createSearchBoxCities();
         }
 
@@ -179,8 +203,9 @@
                             companyName = ownerObj.features[i].properties["coname"];
                             juridicalForm = ownerObj.features[i].properties["jurform"];
                             reg_no = ownerObj.features[i].properties["reg_no"];
-                            document.getElementById('info-box').textContent = "Förnamn" + firstName + " Efternamn " + surName + " " + companyName + " " + juridicalForm + " " + reg_no;
-                            break;
+
+                            document.getElementById('info-box').innerHTML = "<h4> Förnamn" + firstName + "<br/>" + "<h3> Efternamn " + surName + " " + companyName + "<br> " + juridicalForm + " " + reg_no;
+
                         }
                     }
                 });
