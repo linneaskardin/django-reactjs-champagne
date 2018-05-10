@@ -94,6 +94,7 @@
                 }
             });
             
+            //********************* THIS IS EXPERIMENTAL PLACE FOR CHANGING MARKER COLOR ******************
            image2='https://maps.google.com/mapfiles/kml/shapes/library_maps.png'; image1='https://www.google.com/mapfiles/marker_green.png';
             testMarker = new google.maps.Marker({
                 map: map,
@@ -103,20 +104,23 @@
                 position: {
                     lat: 59.327,
                     lng: 23.067
-                }
+                },
+                showInfo: false
             });
             testMarker.addListener('click', toggleBounce);
 
             function toggleBounce() {
-                if (testMarker.getAnimation() !== null) {
+                if (testMarker.showInfo == false) {
                     testMarker.setIcon(image1);
-                    console.log(testMarker.icon);
+                    console.log("showInfo är "+testMarker.showInfo);
+                    testMarker.showInfo=true;
                 } else {
                     testMarker.setIcon(image2);
-                    console.log(testMarker.icon);
+                    console.log("showInfo är "+testMarker.showInfo);
+                    testMarker.showInfo=false;
                 }
             }
-
+            //********************* END CHANGING MARKER COLOR ******************
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
