@@ -43,6 +43,10 @@
         #map #infowindow-content {
             display: inline;
         }
+        #info-box{
+          height: 20px; /* Change to something better */
+          background-color: yellow;
+        }
 
         #info-box {
             height: auto;
@@ -92,8 +96,10 @@
             <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
             <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
 
+
           </div>
     {% endif %}
+
 
     <!-- Här skapas kartan och sökrutan samt det som hamnar i info-box som läggs in i id="map", -->
     <script>
@@ -110,9 +116,16 @@
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-            map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
+
+
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
+
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
+
+            map.data.addListener('click', function(event) {
+                document.getElementById('info-box').textContent =
+                    event.feature.getProperty('coord_e');
+            });
 
             map.data.setStyle({ // Styling of boarderlines. Ingrid
                 strokeWeight: 0.5,
@@ -163,7 +176,7 @@
                     map.fitBounds(bounds);
                 });
             }
-
+            addMarkers();
             createSearchBoxCities();
         }
 

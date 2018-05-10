@@ -9,6 +9,7 @@
 <!-- This will appear if you have signed in -->
 <div id="MenuAppAuth"></div> 
 
+
 {% render_bundle 'vendors' %}
 {% render_bundle 'MenuAppAuth' %}
 <div class="jumbotron text-center">
@@ -17,8 +18,6 @@
     <p>Välkommen till Toolgate Maps! Hoppas du hittar vad du söker!</p>
     <a href="{% url 'logout' %}"><p>Logga Ut</p></a>
   </div>
-
-
 
 {% else %}
 
