@@ -84,7 +84,7 @@ class Command(BaseCommand):
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key]}
                 elif key in dictArea and key not in dictPrice:
                     if key in dictLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease}
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key]}
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key]}
                 elif key not in dictArea and key in dictPrice:
@@ -93,7 +93,10 @@ class Command(BaseCommand):
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key]}
                 else:
-                    value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]} # pull values and merge them
+                    if key in dictLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key]}
+                    else:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]}
                 z[key] = value # add the new values to z
         # Populate model fields
         for key,value in z.items():

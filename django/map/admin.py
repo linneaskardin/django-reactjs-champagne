@@ -3,7 +3,7 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import Punkt, Waypoint, PropertyOwner, Property, PropertyBoarder
+from .models import Punkt, Waypoint, PropertyOwner, Property, PropertyBoarder, LeaseHolder
 
 from django.contrib.gis.db import models
 from django.contrib.gis import admin #från youtubevideo DjangoCon
@@ -22,6 +22,9 @@ class PropertyOwnerAdmin(admin.ModelAdmin): # Decides what is shown for Property
 class PropertyAdmin(admin.ModelAdmin):
     # Don't know how to display PointField
     pass
+class LeaseHolderAdmin(admin.ModelAdmin):
+    list_display=('coname', 'firstname', 'surname')
+    pass
 
 class PropertyBoarderAdmin(LeafletGeoAdmin):
     list_display =('adat', 'internid', 'detaljtyp', 'xyfel' )
@@ -29,5 +32,6 @@ class PropertyBoarderAdmin(LeafletGeoAdmin):
 admin.site.register(Property, PropertyAdmin)
 admin.site.register(PropertyOwner, PropertyOwnerAdmin)# Makes data appear on admin site
 admin.site.register(Punkt, PunktAdmin)
+admin.site.register(LeaseHolder, LeaseHolderAdmin)
 admin.site.register(Waypoint, WaypointAdmin)
 admin.site.register(PropertyBoarder, PropertyBoarderAdmin)
