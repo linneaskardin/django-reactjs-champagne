@@ -55,7 +55,7 @@ class Command(BaseCommand):
             readerk = csv.reader(csvkop, delimiter=';')
             dictKop={}
             for row in readerk:
-                dictKop[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16]}
+                dictKop[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16],'price_date':row[1][:8]} # Don't include serial number
         # Merge dictKop and dictFas
         d = {}
         for key,value in dictKop.items():
@@ -64,10 +64,11 @@ class Command(BaseCommand):
                 d[key] = value
         # Create dictPrice with fnr as a key
         dictPrice = {}
+        # Since the data is sorted on date and serial number in the .txt-file, the latest sale will be overwrite earlier sales
         for key,value in d.items():
             dictPrice[d.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':d.get(key,{'currency_fa':'NA'})['currency_fa'],
             'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
-            'price_lo':d.get(key,{'price_lo':'NA'})['price_lo']}
+            'price_lo':d.get(key,{'price_lo':'NA'})['price_lo'],'price_date':d.get(key,{'price_date':'NA'})['price_date']}
         # Merge all dictionaries
         z = {}
         for key,value in dictOwner.items():# iterator over e
@@ -92,8 +93,8 @@ class Command(BaseCommand):
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                 district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
                 unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
-                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'])
-            # Price becomes 'okänd' when info doesn't exist
+                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
+            # Price becomes 'okänd' when info doesn't exist. Area and other Fields become None
             elif key in dictArea and key not in dictPrice:
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
@@ -104,7 +105,7 @@ class Command(BaseCommand):
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                 district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
                 unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
-                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'])
+                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
             else:
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
@@ -112,6 +113,5 @@ class Command(BaseCommand):
                 unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd')
             y.save()
             y.owners.add(q)
-
 
         self.stdout.write("Successfully populated models", ending='') # This is the way to print in the console //CE
