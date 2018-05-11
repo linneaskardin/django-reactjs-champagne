@@ -52,6 +52,7 @@ class Property(models.Model):
     currency_fa = models.CharField('Valuta fast egendom',max_length=5, default = '', null=True)
     price_lo = models.CharField('Köpeskilling lös egendom',max_length=36, default = '', null=True) # Comes as a string when missing
     currency_lo = models.CharField('Valuta lös egendom',max_length=5, default = '', null=True)
+    price_date = models.IntegerField('Försäljningsdatum',null=True,default=0)
     coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
     coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
