@@ -167,6 +167,17 @@
                     }
                 }]
             }]
+            var array;
+            var propertyGEOJSON2;
+            $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
+                propertyGEOJSON2 = data;
+                console.log(propertyGEOJSON);
+                console.log(propertyGEOJSON2);
+                console.log("propertyGEOJSON2");
+                array= [propertyGEOJSON2];
+                console.log(array);
+                console.log(propertyGEOJSON[4]);
+            });
 
             for (var i = 0, length = propertyGEOJSON[0].features.length; i < length; i++) {
                 createMarkerWithListener(i);
@@ -200,7 +211,7 @@
                 lng = propertyGEOJSON[0].features[i].geometry.coordinates[1];
                 ownerID = propertyGEOJSON[0].features[i].properties.owners;
 
-                var data = propertyGEOJSON[i],
+                var data = propertyGEOJSON[i], //Ingrid: behöver nog inte data-variabeln
                     latLng = new google.maps.LatLng(lng, lat);
 
                 // Creating a marker and putting it on the map
