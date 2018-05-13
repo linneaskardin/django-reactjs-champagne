@@ -209,7 +209,8 @@
                     map: map,
                     icon: redIcon,
                     ownerID: ownerID,
-                    showInfo: false
+                    showInfo: false,
+                    id: i
                 });
                 console.log(latLng.toString());
 
@@ -368,13 +369,17 @@
             console.log(theMarker.showInfo);
 
             if (theMarker.showInfo == true) {
-                console.log("showInfo är " + theMarker.showInfo);
+                console.log("IF showInfo är " + theMarker.showInfo);
                 unclickMarker(theMarker);
             } else {
                 theMarker.setIcon(blueIcon);
-                console.log("showInfo är " + theMarker.showInfo);
+                console.log("ELSE showInfo är " + theMarker.showInfo);
                 theMarker.showInfo = true;
-                unclickMarker(previousClickedMarker);
+                if (previousClickedMarker.id!=theMarker.id){
+                    unclickMarker(previousClickedMarker);
+                }
+                
+                
                 previousClickedMarker = theMarker;
             }
 
