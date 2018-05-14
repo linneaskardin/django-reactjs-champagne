@@ -26,12 +26,16 @@ def waypoint_datasets(request):
 
 def property_datasets(request):
     #punkter = serialize('geojson', Property.objects.all())
+
     punkter = serialize('geojson', Property.objects.filter(pk__lte=20)) #gte = greater/equal than, lte = less/equal than
+
     return HttpResponse(punkter, content_type='json')
 
 def propertyOwner_datasets(request):
     #punkter = serialize('geojson', Property.objects.all())
+
     punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
+
     return HttpResponse(punkter, content_type='json')
 
 def propertyBoarder_datasets(request):
