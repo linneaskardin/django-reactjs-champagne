@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap4',
     'webpack_loader',
-    'bootstrap4',
-    'corsheaders', # Because of a bug //CE
 
     'jquery',
 
@@ -56,9 +54,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # Because of a bug. CorsMiddleware should be placed as high as possible,
-    #especially before any middleware that can generate responses such as Django's CommonMiddleware or Whitenoise's WhiteNoiseMiddleware.
-    #If it is not before, it will not be able to add the CORS headers to these responses. //CE
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,12 +103,12 @@ LEAFLET_CONFIG ={ #Ingrid: Detta fixar med kartan.
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'postgres8i',
 
-        'NAME': 'postgres4l',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
@@ -173,7 +168,3 @@ LOGIN_REDIRECT_URL = 'toolgate_maps' #Toolgate Maps will be shown when you login
 LOGOUT_REDIRECT_URL = 'home' #Home page will appear when you log out.
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-
-CORS_ORIGIN_ALLOW_ALL = True #Because of a bug. Configure the middleware's behaviour in your Django settings.
-# You must add the hosts that are allowed to do cross-site requests to CORS_ORIGIN_WHITELIST,
-#or set CORS_ORIGIN_ALLOW_ALL to True to allow all hosts. //CE

@@ -9,7 +9,6 @@
 <!-- This will appear if you have signed in -->
 <div id="MenuAppAuth"></div> 
 
-
 {% render_bundle 'vendors' %}
 {% render_bundle 'MenuAppAuth' %}
 <div class="jumbotron text-center">
@@ -19,22 +18,27 @@
     <a href="{% url 'logout' %}"><p>Logga Ut</p></a>
   </div>
 
+
+
 {% else %}
 
 <!-- This will appear if you have NOT signed in -->
 <div id="MenuApp"></div>
 {% render_bundle 'vendors' %}
 {% render_bundle 'MenuApp' %}
- <p>You are not logged in</p>
-<br>
-<div class="container" style="background-color: white">
+<div class="jumbotron text-center" style="background-color: #f2f2f2">
+    <h1> Välkommen till Toolgate Maps! </h1>
+    <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
+    <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
+</div>
+<div class="container" style="background-color:  #f2f2f2">
  <div class="row">
    <div class="col-sm-6">
      <br>
        <img src="https://www.jqueryscript.net/images/Show-Nearby-Places-jQuery-Google-Maps-WhatsNearby.jpg" class="img-fluid" alt="Responsive image"><br>
      <br>
      </div>
-   <div class="col-sm-6" style="background-color: white">
+   <div class="col-sm-6" style="background-color:  #f2f2f2">
      <div class="card text-center">
        <div class="card-body">
            <h1 class="card-title">Abonnemang</h1><br>

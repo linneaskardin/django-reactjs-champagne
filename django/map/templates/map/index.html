@@ -1,8 +1,4 @@
-{% extends "base.html" %} 
-{% load render_bundle from webpack_loader %} 
-{% load bootstrap4 %} 
-{% block title %}Index{% endblock %} 
-{% block main %} {% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -10,7 +6,6 @@
 <!-- Ingird: vad gör denna? Behövs ev ej -->
 
 <head>
-    <title> Toolgate Maps - Map</title>
     {{ form.media }}
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -29,6 +24,7 @@
         }
 
         /* Optional: Makes the sample page fill the window. */
+
         html,
         body {
             height: 80%;
@@ -43,10 +39,6 @@
         #map #infowindow-content {
             display: inline;
         }
-        #info-box{
-          height: 20px; /* Change to something better */
-          background-color: yellow;
-        }
 
         #info-box {
             height: auto;
@@ -55,19 +47,21 @@
             text-indent: 15px;
             margin: auto;
         }
-        
+
         #citySearch {
             margin: 1%;
             margin-left: 5%;
-            
+
         }
-        #intro-text{
+
+        #intro-text {
             margin-left: 5%;
+
             line-height: 10px; 
-            width: 40%;
+            width: auto;
+
 
         }
-
 
     </style>
 
@@ -78,138 +72,267 @@
     {% if user.is_authenticated %}
     <div id="MenuAppAuth"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
+
     <div id="intro-text">
         <h3>Toolgate Maps </h3>
-        <p >Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
+        <p>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
     </div>
-
-    <input id="citySearch" class="controls" type="text" placeholder="Sök (address, stad..)">
+    <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
     <div id="map"></div>
     <div id="info-box"></div>
     {% else %}
 
     <div id="MenuApp"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
+
     <div class="jumbotron text-center">
-            <h1>Du är inte inloggad!</h1> 
-            <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
-            <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
-            <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
+        <h1>Du är inte inloggad!</h1>
+        <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
 
-
-          </div>
+    </div>
     {% endif %}
 
-
-    <!-- Här skapas kartan och sökrutan samt det som hamnar i info-box som läggs in i id="map", -->
     <script>
         var map;
+        var previousClickedMarker;
+        var ownerObj;
+        var propertyGEOJSON;
+        var blueIcon = {
+            path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+            fillColor: 'blue',
+            fillOpacity: 0.7,
+            scale: 0.8,
+            strokeColor: 'white',
+            strokeWeight: 3
+        };
+        var redIcon = {
+            path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+            fillColor: 'red',
+            fillOpacity: 0.7,
+            scale: 0.8,
+            strokeColor: 'white',
+            strokeWeight: 3
+        };
+
 
         function initMapAndLayers() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 5,
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 17,
                 center: {
-                    lat: 58.5,
-                    lng: 17
+                    // Location where there is a Property now. Default when geolocation doesn't work //CE
+                    lat: 61.335,
+                    lng: 16.38
+                }
+            });
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    var locationMarker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 8.5,
+                            fillColor: "#0040FF",
+                            fillOpacity: 0.7,
+                            strokeWeight: 0.4,
+                            clickable: false
+                        }
+                    });
+                    map.setCenter(pos);
+                }, function() {
+                    handleLocationError(true, locationMarker, map.getCenter());
+                });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, locationMarker, map.getCenter());
+            }
+
+            previousClickedMarker = new google.maps.Marker({ //Sets values so it's not null.
+                position: new google.maps.LatLng(1, 1),
+                map: map,
+                showInfo: false,
+                id: -1
+            })
+            previousClickedMarker.setVisible(false);
+
+            $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
+                propertyGEOJSON = data;
+                for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
+                    createMarker(i);
                 }
             });
 
-            // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+            function createMarker(i) {
+                lat = propertyGEOJSON.features[i].geometry.coordinates[0];
+                lng = propertyGEOJSON.features[i].geometry.coordinates[1];
+                ownerID = propertyGEOJSON.features[i].properties.owners;
 
+                var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
+                    latLng = new google.maps.LatLng(lng, lat);
 
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/waypoints_data/');
-
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
-
-            map.data.addListener('click', function(event) {
-                document.getElementById('info-box').textContent =
-                    event.feature.getProperty('coord_e');
-            });
-
-            map.data.setStyle({ // Styling of boarderlines. Ingrid
-                strokeWeight: 0.5,
-                strokeColor: "#FF0000",
-            });
-
-            function createSearchBoxCities() {
-                var input = document.getElementById('citySearch');
-                var searchBox = new google.maps.places.SearchBox(input);
-                //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-                // Bias the SearchBox results towards current map's viewport.
-                map.addListener('bounds_changed', function() {
-                    searchBox.setBounds(map.getBounds());
+                // Creating a marker and putting it on the map
+                var propertyMarker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    icon: redIcon,
+                    ownerID: ownerID,
+                    showInfo: false,
+                    id: i,
+                    dbInfo: propertyGEOJSON.features[i].properties,
                 });
+                console.log(latLng.toString());
 
-                var markers = [];
-                // Listen for the event fired when the user selects a prediction and retrieve
-                // more details for that place.
-                searchBox.addListener('places_changed', function() {
-                    var places = searchBox.getPlaces();
-
-                    if (places.length == 0) {
-                        return;
-                    }
-
-                    // Clear out the old markers.
-                    markers.forEach(function(marker) {
-                        marker.setMap(null);
-                    });
-                    markers = [];
-
-                    // For each place, get the icon, name and location.
-                    var bounds = new google.maps.LatLngBounds();
-                    places.forEach(function(place) {
-                        if (!place.geometry) {
-                            console.log("Returned place contains no geometry");
-                            return;
-                        }
-
-                        if (place.geometry.viewport) {
-                            // Only geocodes have viewport.
-                            bounds.union(place.geometry.viewport);
-                        } else {
-                            bounds.extend(place.geometry.location);
-                        }
-                    });
-                    map.fitBounds(bounds);
-                });
+                propertyMarker.addListener('click', function() {
+                    clickedProperty(propertyMarker);
+                })
             }
-            addMarkers();
-            createSearchBoxCities();
+
+            // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
+
+            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+            map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
+            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
+
+            map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
+                return {
+                    strokeWeight: 0.5,
+                    strokeColor: "#0000ff",
+                    clickable: false,
+                    icon: feature.getProperty(blueIcon), //behövs ingen icon här? Ingrid
+                }
+            });
+
+            createSearchBoxCities(map);
         }
 
         const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
         $.ajax({
             url: ownersURL,
             success: function(result) {
-                var ownerObj = result; //The ownerJson as an object. IM
+                ownerObj = result;
+            }
 
-                //                    console.log(ownerObj);
-                //                    console.log("specifik feature: " + ownerObj.features[1]);
-                //                    console.log(": " + ownerObj.features[1].properties["pk"]);
+        });
 
-                map.data.addListener('click', function(event) {
-                    var ownerID = event.feature.getProperty('owners'); //IM: this is the owners id to the clicked property
-                    console.log("klickat ownerID: " + ownerID);
+        //************* FUNCTIONS UNDER HERE *****************
 
-                    var i;
-                    for (i = 0; i < ownerObj.features.length; i++) {
-                        if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
-                            console.log("Det finns en träff med ägare och property");
-                            firstName = ownerObj.features[i].properties["firstname"];
-                            surName = ownerObj.features[i].properties["surname"];
-                            companyName = ownerObj.features[i].properties["coname"];
-                            juridicalForm = ownerObj.features[i].properties["jurform"];
-                            reg_no = ownerObj.features[i].properties["reg_no"];
-                            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:" + companyName +  "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
-                            break;
-                        }
+        function createSearchBoxCities(map) {
+            var input = document.getElementById('citySearch');
+            var searchBox = new google.maps.places.SearchBox(input);
+            //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            var markers = [];
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function() {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function(marker) {
+                    marker.setMap(null);
+                });
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
                     }
                 });
+                map.fitBounds(bounds);
+            });
+        }
+
+        function findAndPrintOwners(ownerObj, theProperty) {
+            var i;
+            for (i = 0; i < ownerObj.features.length; i++) {
+                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID) { //IM: loops through the owners to find a match. 
+                    writeToInfobox(ownerObj.features[i], theProperty);
+                    break;
+                }
             }
-        });
+        }
+
+
+        function writeToInfobox(ownerFeatures, theProperty) {
+            console.log("Det finns en träff med ägare och property");
+            firstName = ownerFeatures.properties["firstname"];
+            surName = ownerFeatures.properties["surname"];
+            companyName = ownerFeatures.properties["coname"];
+            juridicalForm = ownerFeatures.properties["jurform"];
+            reg_no = ownerFeatures.properties["reg_no"];
+
+            area = theProperty.dbInfo.area;
+            municipality = theProperty.dbInfo.municipality;
+            fast_bet = theProperty.dbInfo.district + " " + theProperty.dbInfo.unity + theProperty.dbInfo.sign + theProperty.dbInfo.block;
+            price_fa = theProperty.dbInfo.price_fa + " (" + theProperty.dbInfo.currency_fa + ")";
+            price_lo = theProperty.dbInfo.price_lo + " (" + theProperty.dbInfo.currency_lo + ")";
+            price_date = theProperty.dbInfo.price_date;
+
+            console.log("fast_bet: " + fast_bet);
+            console.log("köpeskilling fast o lös: " + price_fa + " " + price_lo + " från datum: " + price_date);
+
+            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" +
+                "<h5> Namn:      " + firstName + " " + surName +
+                "<h5> Företag: " + companyName + " " +
+                "<h5> Organisationsnummer:     " + " " + reg_no +
+                "<h5> Area: " + area + " " +
+                "<h5> Fastighetsbeteckning: " + fast_bet + " " +
+                "<h5> Fast Köpeskilling: " + price_fa + " " +
+                "<h5> Datum senaste köp: " + price_date + " ";
+        }
+
+        function clickedProperty(theMarker) {
+            if (theMarker.showInfo == true) {
+                unclickMarker(theMarker);
+            } else {
+                theMarker.setIcon(blueIcon);
+                theMarker.showInfo = true;
+                if (previousClickedMarker.id != theMarker.id) {
+                    unclickMarker(previousClickedMarker);
+                }
+                findAndPrintOwners(ownerObj, theMarker);
+                previousClickedMarker = theMarker;
+
+            }
+        }
+
+        function unclickMarker(theMarker) {
+            theMarker.setIcon(redIcon);
+            theMarker.showInfo = false;
+            document.getElementById('info-box').innerHTML = "";
+            console.log("återställt markern");
+        }
+
+        function handleLocationError(browserHasGeolocation, locationMarker, pos) {
+
+            // Put LocationError handlers //CE
+        }
 
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI&libraries=places&callback=initMapAndLayers"></script>
