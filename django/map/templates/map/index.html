@@ -126,8 +126,9 @@
                 position: new google.maps.LatLng(1, 1),
                 map: map,
                 showInfo: false,
-                id: -1,
+                id: -1
             })
+            previousClickedMarker.setVisible(false);
 
             $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
                 propertyGEOJSON = data;
@@ -244,7 +245,7 @@
                     companyName = ownerObj.features[i].properties["coname"];
                     juridicalForm = ownerObj.features[i].properties["jurform"];
                     reg_no = ownerObj.features[i].properties["reg_no"];
-
+                    console.log('förnamn: ' + firstName);
                     document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:" + companyName +  "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
                     break;
 
@@ -253,6 +254,7 @@
         }
 
         function clickedProperty(propertyMarker) {
+            console.log(propertyMarker.id);
             changeMarkerIcon(propertyMarker);
             console.log("klickat ownerID: " + propertyMarker.ownerID);
             findAndPrintOwners(ownerObj, propertyMarker.ownerID);
