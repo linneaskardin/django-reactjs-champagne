@@ -304,13 +304,6 @@
                 "<h5> Datum senaste köp: " + price_date + " ";
         }
 
-        function clickedProperty(propertyMarker) {
-            console.log(propertyMarker.id);
-            changeMarkerIcon(propertyMarker);
-            console.log("klickat ownerID: " + propertyMarker.ownerID);
-            findAndPrintOwners(ownerObj, propertyMarker.ownerID);
-        }
-
         function clickedProperty(theMarker) {
             if (theMarker.showInfo == true) {
                 unclickMarker(theMarker);
@@ -324,7 +317,6 @@
                 previousClickedMarker = theMarker;
             }
         }
-
 
         function unclickMarker(theMarker) {
             theMarker.setIcon(redIcon);
