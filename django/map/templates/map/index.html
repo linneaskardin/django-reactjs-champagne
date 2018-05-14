@@ -1,4 +1,8 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} 
+{% load render_bundle from webpack_loader %} 
+{% load bootstrap4 %} 
+{% block title %}Index{% endblock %} 
+{% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -18,10 +22,12 @@
 
         #map {
             height: 100%;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Optional: Makes the sample page fill the window. */
-
         html,
         body {
             height: 80%;
@@ -38,11 +44,25 @@
         }
 
         #info-box {
-            height: 20px;
-            /*Ingrid: change to something better*/
-            background-color: yellow;
-            /*Ingrid: change to something better*/
+            height: auto;
+            width: 30%;
+            background-color: white;
+            text-indent: 15px;
+            margin: auto;
         }
+        
+        #citySearch {
+            margin: 1%;
+            margin-left: 5%;
+            
+        }
+        #intro-text{
+            margin-left: 5%;
+            line-height: 10px; 
+            width: 40%;
+
+        }
+
 
     </style>
 
@@ -53,34 +73,29 @@
     {% if user.is_authenticated %}
     <div id="MenuAppAuth"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuAppAuth' %}
+    <div id="intro-text">
+        <h3>Toolgate Maps </h3>
+        <p >Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
+    </div>
 
-    <h3> Detta är Toolgate Maps flik för kartan. Detta är en googlekarta. </h3>
-    <input id="citySearch" class="controls" type="text" placeholder="Search Box">
-    <br>
-    <h4>Text</h4>
+    <input id="citySearch" class="controls" type="text" placeholder="Sök (address, stad..)">
     <div id="map"></div>
-    <div class="col-sm-6" style="background-color: white">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="card-title">Fastighetsinformation</h3><br>
-                <p>
-                    <li></li><br>
-                    <li>Data över hela Sverige</li><br>
-                    <li>bla bla bla</li><br>
-                </p>
-            </div>
-        </div>
-    </div>
-    <div id="info-box">
-        <h4>Här visas ägaren sen när du tryckt. </h4>
-    </div>
+    <div id="info-box"></div>
     {% else %}
 
     <div id="MenuApp"></div>
     {% render_bundle 'vendors' %} {% render_bundle 'MenuApp' %}
-    <p>You are not logged in</p>
-    <p>Please login to see this page.</p>
+
+    <div class="jumbotron text-center">
+            <h1>Du är inte inloggad!</h1> 
+            <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
+            <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
+
+          </div>
     {% endif %}
+
+    <!-- Här skapas kartan och sökrutan samt det som hamnar i info-box som läggs in i id="map", -->
 
     <script>
         var map;
