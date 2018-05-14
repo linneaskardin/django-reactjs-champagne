@@ -56,8 +56,10 @@
 
         #intro-text {
             margin-left: 5%;
-            line-height: 10px;
-            width: 40%;
+
+            line-height: 10px; 
+            width: auto;
+
 
         }
 
@@ -276,6 +278,7 @@
             }
         }
 
+
         function writeToInfobox(ownerFeatures, theProperty) {
             console.log("Det finns en träff med ägare och property");
             firstName = ownerFeatures.properties["firstname"];
@@ -315,6 +318,7 @@
                 }
                 findAndPrintOwners(ownerObj, theMarker);
                 previousClickedMarker = theMarker;
+
             }
         }
 
