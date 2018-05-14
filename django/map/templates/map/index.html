@@ -88,130 +88,37 @@
         var blueIcon = 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png';
         var redIcon = 'https://www.google.com/mapfiles/marker_green.png';
         var ownerObj;
+        var propertyGEOJSON;
 
         function initMapAndLayers() {
-            map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 5,
                 center: {
                     lat: 59,
                     lng: 17
                 }
             });
-            previousClickedMarker = new google.maps.Marker({
+            
+            previousClickedMarker = new google.maps.Marker({ //Sets values so it's not null.
                 position: new google.maps.LatLng(1, 1),
                 map: map,
                 showInfo: false,
+                id: -1,
             })
-
-
-            // ************* START TEST MAKING MAEKERS FRON JSON *********************
-            var propertyGEOJSON = [{
-                "type": "FeatureCollection",
-                "crs": {
-                    "type": "name",
-                    "properties": {
-                        "name": "EPSG:4326"
-                    }
-                },
-                "features": [{
-                    "type": "Feature",
-                    "properties": {
-                        "area": "64.000000000000",
-                        "coord_e": "10.000",
-                        "coord_n": "25.000",
-                        "owners": [2],
-                        "pk": "2"
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [21.659586671232507, 64.61598263673106]
-                    }
-                }, {
-                    "type": "Feature",
-                    "properties": {
-                        "area": "24.000000000000",
-                        "coord_e": "32.000",
-                        "coord_n": "34.000",
-                        "owners": [1],
-                        "pk": "1"
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [14.476761436347962, 54.78120947893149]
-                    }
-                }, {
-                    "type": "Feature",
-                    "properties": {
-                        "area": "60.000000000000",
-                        "coord_e": "45.000",
-                        "coord_n": "43.000",
-                        "owners": [3],
-                        "pk": "3"
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [18.36512247158684, 60.67960017270254]
-                    }
-                }, {
-                    "type": "Feature",
-                    "properties": {
-                        "area": "199.000000000000",
-                        "coord_e": "87.000",
-                        "coord_n": "85.000",
-                        "owners": [3],
-                        "pk": "4"
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [17.078571410844813, 57.372694253045616]
-                    }
-                }]
-            }]
-            var array;
-            var propertyGEOJSON2;
+            
             $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
-                propertyGEOJSON2 = data;
-                console.log(propertyGEOJSON);
-                console.log(propertyGEOJSON2);
-                console.log("propertyGEOJSON2");
-                array= [propertyGEOJSON2];
-                console.log(array);
-                console.log(propertyGEOJSON[4]);
+                propertyGEOJSON = data;
+                for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
+                    createMarker(i);
+                }
             });
 
-            for (var i = 0, length = propertyGEOJSON[0].features.length; i < length; i++) {
-                createMarkerWithListener(i);
-                /*lat = propertyGEOJSON[0].features[i].geometry.coordinates[0];
-                lng = propertyGEOJSON[0].features[i].geometry.coordinates[1];
-                ownerID = propertyGEOJSON[0].features[i].properties.owners;
+            function createMarker(i) {
+                lat = propertyGEOJSON.features[i].geometry.coordinates[0];
+                lng = propertyGEOJSON.features[i].geometry.coordinates[1];
+                ownerID = propertyGEOJSON.features[i].properties.owners;
 
-                var data = propertyGEOJSON[i],
-                    latLng = new google.maps.LatLng(lng, lat);
-
-                // Creating a marker and putting it on the map
-                var propertyMarker = new google.maps.Marker({
-                    position: latLng,
-                    map: map,
-                    icon: redIcon,
-                    ownerID: ownerID
-                });
-                console.log(latLng.toString());
-
-                //                propertyMarker.addListener('click', clickedProperty);
-                propertyMarker.addListener('click', function() {
-                    console.log("this ovanför");
-                    console.log(propertyMarker);
-                    console.log("ovanför är infon jag vill se");
-                    clickedProperty(propertyMarker);
-                })*/
-            }
-
-            function createMarkerWithListener(i) {
-                lat = propertyGEOJSON[0].features[i].geometry.coordinates[0];
-                lng = propertyGEOJSON[0].features[i].geometry.coordinates[1];
-                ownerID = propertyGEOJSON[0].features[i].properties.owners;
-
-                var data = propertyGEOJSON[i], //Ingrid: behöver nog inte data-variabeln
+                var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
                     latLng = new google.maps.LatLng(lng, lat);
 
                 // Creating a marker and putting it on the map
@@ -221,28 +128,15 @@
                     icon: redIcon,
                     ownerID: ownerID,
                     showInfo: false,
-                    id: i
+                    id: i,
                 });
                 console.log(latLng.toString());
 
                 propertyMarker.addListener('click', function() {
-                    //                    console.log(propertyMarker);
-                    //                    console.log("ovanför är infon jag vill se");
                     clickedProperty(propertyMarker);
                 })
             }
 
-            function clickedProperty(propertyMarker) {
-                changeMarker(propertyMarker);
-                //                console.log(propertyMarker);
-                //                console.log("propertymarker här ovan");
-                console.log("klickat ownerID: " + propertyMarker.ownerID);
-                findAndPrintOwners(ownerObj, propertyMarker.ownerID);
-            }
-
-
-
-            //************************** END TEST MAKING MARKERS FROM JSON ************************
 
             //********************* THIS IS EXPERIMENTAL PLACE FOR CHANGING MARKER COLOR ******************
 
@@ -253,7 +147,7 @@
                 animation: google.maps.Animation.DROP,
                 position: {
                     lat: 59.327,
-                    lng: 23.067
+                    lng: 33.067
                 },
                 showInfo: false,
             });
@@ -274,7 +168,7 @@
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
-            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
             // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
@@ -282,7 +176,7 @@
                 return {
                     strokeWeight: 0.5,
                     strokeColor: "#0000ff",
-                    clickable: true,
+                    clickable: false,
                     icon: feature.getProperty(blueIcon),
                 }
             });
@@ -294,19 +188,7 @@
         $.ajax({
             url: ownersURL,
             success: function(result) {
-                ownerObj = result; //The ownerJson as an object. IM
-
-                //                    console.log(ownerObj);
-                //                    console.log("specifik feature: " + ownerObj.features[1]);
-                //                    console.log(": " + ownerObj.features[1].properties["pk"]);
-
-                /*    map.data.addListener('click', function(event) {
-                        var ownerID = event.feature.getProperty('owners'); //IM: this is the owners id to the clicked property
-                        console.log("klickat ownerID: " + ownerID);
-                        findAndPrintOwners(ownerObj, ownerID);
-                        changeMarker(event);
-
-                    });*/
+                ownerObj = result; 
             }
 
         });
@@ -375,32 +257,29 @@
             }
         }
 
-        function changeMarker(theMarker) {
-            console.log("ska byta marker");
-            console.log(theMarker.showInfo);
+        function clickedProperty(propertyMarker) {
+            changeMarkerIcon(propertyMarker);
+            console.log("klickat ownerID: " + propertyMarker.ownerID);
+            findAndPrintOwners(ownerObj, propertyMarker.ownerID);
+        }
 
+        function changeMarkerIcon(theMarker) {
             if (theMarker.showInfo == true) {
-                console.log("IF showInfo är " + theMarker.showInfo);
                 unclickMarker(theMarker);
             } else {
                 theMarker.setIcon(blueIcon);
-                console.log("ELSE showInfo är " + theMarker.showInfo);
                 theMarker.showInfo = true;
-                if (previousClickedMarker.id!=theMarker.id){
+                if (previousClickedMarker.id != theMarker.id) {
                     unclickMarker(previousClickedMarker);
                 }
-                
-                
                 previousClickedMarker = theMarker;
             }
-
         }
 
         function unclickMarker(theMarker) {
-            console.log("showInfo: " + theMarker.showInfo);
             theMarker.setIcon(redIcon);
             theMarker.showInfo = false;
-            console.log("återställer markern");
+            console.log("återställt markern");
         }
 
     </script>
