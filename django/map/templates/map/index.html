@@ -99,133 +99,203 @@
 
     <script>
         var map;
+        var previousClickedMarker;
+        var blueIcon = 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png';
+        var redIcon = 'https://www.google.com/mapfiles/marker_green.png';
+        var ownerObj;
+        var propertyGEOJSON;
 
         function initMapAndLayers() {
-            map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 5,
                 center: {
-                    lat: 58.5,
+                    lat: 59,
                     lng: 17
                 }
             });
             
+            previousClickedMarker = new google.maps.Marker({ //Sets values so it's not null.
+                position: new google.maps.LatLng(1, 1),
+                map: map,
+                showInfo: false,
+                id: -1,
+            })
+            
+            $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
+                propertyGEOJSON = data;
+                for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
+                    createMarker(i);
+                }
+            });
+
+            function createMarker(i) {
+                lat = propertyGEOJSON.features[i].geometry.coordinates[0];
+                lng = propertyGEOJSON.features[i].geometry.coordinates[1];
+                ownerID = propertyGEOJSON.features[i].properties.owners;
+
+                var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
+                    latLng = new google.maps.LatLng(lng, lat);
+
+                // Creating a marker and putting it on the map
+                var propertyMarker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    icon: redIcon,
+                    ownerID: ownerID,
+                    showInfo: false,
+                    id: i,
+                });
+                console.log(latLng.toString());
+
+                propertyMarker.addListener('click', function() {
+                    clickedProperty(propertyMarker);
+                })
+            }
+
+
             //********************* THIS IS EXPERIMENTAL PLACE FOR CHANGING MARKER COLOR ******************
-           image2='https://maps.google.com/mapfiles/kml/shapes/library_maps.png'; image1='https://www.google.com/mapfiles/marker_green.png';
+
             testMarker = new google.maps.Marker({
                 map: map,
                 draggable: true,
-                icon: image1,
+                icon: redIcon,
                 animation: google.maps.Animation.DROP,
                 position: {
                     lat: 59.327,
-                    lng: 23.067
+                    lng: 33.067
                 },
-                showInfo: false
+                showInfo: false,
             });
             testMarker.addListener('click', toggleBounce);
 
             function toggleBounce() {
                 if (testMarker.showInfo == false) {
-                    testMarker.setIcon(image1);
-                    console.log("showInfo är "+testMarker.showInfo);
-                    testMarker.showInfo=true;
+                    testMarker.setIcon(redIcon);
+                    console.log("showInfo är " + testMarker.showInfo);
+                    testMarker.showInfo = true;
                 } else {
-                    testMarker.setIcon(image2);
-                    console.log("showInfo är "+testMarker.showInfo);
-                    testMarker.showInfo=false;
+                    testMarker.setIcon(blueIcon);
+                    console.log("showInfo är " + testMarker.showInfo);
+                    testMarker.showInfo = false;
                 }
             }
             //********************* END CHANGING MARKER COLOR ******************
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
-            //map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
             map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
+            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
-            map.data.setStyle({ // Styling of boarderlines. Ingrid
-                strokeWeight: 0.5,
-                strokeColor: "#0000ff",
+            map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
+                return {
+                    strokeWeight: 0.5,
+                    strokeColor: "#0000ff",
+                    clickable: false,
+                    icon: feature.getProperty(blueIcon),
+                }
             });
 
-            function createSearchBoxCities() {
-                var input = document.getElementById('citySearch');
-                var searchBox = new google.maps.places.SearchBox(input);
-                //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-                // Bias the SearchBox results towards current map's viewport.
-                map.addListener('bounds_changed', function() {
-                    searchBox.setBounds(map.getBounds());
-                });
-
-                var markers = [];
-                // Listen for the event fired when the user selects a prediction and retrieve
-                // more details for that place.
-                searchBox.addListener('places_changed', function() {
-                    var places = searchBox.getPlaces();
-
-                    if (places.length == 0) {
-                        return;
-                    }
-
-                    // Clear out the old markers.
-                    markers.forEach(function(marker) {
-                        marker.setMap(null);
-                    });
-                    markers = [];
-
-                    // For each place, get the icon, name and location.
-                    var bounds = new google.maps.LatLngBounds();
-                    places.forEach(function(place) {
-                        if (!place.geometry) {
-                            console.log("Returned place contains no geometry");
-                            return;
-                        }
-
-                        if (place.geometry.viewport) {
-                            // Only geocodes have viewport.
-                            bounds.union(place.geometry.viewport);
-                        } else {
-                            bounds.extend(place.geometry.location);
-                        }
-                    });
-                    map.fitBounds(bounds);
-                });
-            }
-            createSearchBoxCities();
+            createSearchBoxCities(map);
         }
 
         const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
         $.ajax({
             url: ownersURL,
             success: function(result) {
-                var ownerObj = result; //The ownerJson as an object. IM
+                ownerObj = result; 
+            }
 
-                //                    console.log(ownerObj);
-                //                    console.log("specifik feature: " + ownerObj.features[1]);
-                //                    console.log(": " + ownerObj.features[1].properties["pk"]);
+        });
 
-                map.data.addListener('click', function(event) {
-                    var ownerID = event.feature.getProperty('owners'); //IM: this is the owners id to the clicked property
-                    console.log("klickat ownerID: " + ownerID);
+        //************* FUNCTIONS UNDER HERE *****************
 
-                    var i;
-                    for (i = 0; i < ownerObj.features.length; i++) {
-                        if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
-                            console.log("Det finns en träff med ägare och property");
-                            firstName = ownerObj.features[i].properties["firstname"];
-                            surName = ownerObj.features[i].properties["surname"];
-                            companyName = ownerObj.features[i].properties["coname"];
-                            juridicalForm = ownerObj.features[i].properties["jurform"];
-                            reg_no = ownerObj.features[i].properties["reg_no"];
+        function createSearchBoxCities(map) {
+            var input = document.getElementById('citySearch');
+            var searchBox = new google.maps.places.SearchBox(input);
+            //            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-                            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:" + companyName +  "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
-                            break;
-                        }
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            var markers = [];
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function() {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function(marker) {
+                    marker.setMap(null);
+                });
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
                     }
                 });
+                map.fitBounds(bounds);
+            });
+        }
+
+        function findAndPrintOwners(ownerObj, ownerID) {
+            var i;
+            for (i = 0; i < ownerObj.features.length; i++) {
+                if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
+                    console.log("Det finns en träff med ägare och property");
+                    firstName = ownerObj.features[i].properties["firstname"];
+                    surName = ownerObj.features[i].properties["surname"];
+                    companyName = ownerObj.features[i].properties["coname"];
+                    juridicalForm = ownerObj.features[i].properties["jurform"];
+                    reg_no = ownerObj.features[i].properties["reg_no"];
+
+                    document.getElementById('info-box').innerHTML = "<h4> Förnamn " + firstName + "<br/>" + "<h3> Efternamn " + surName + " " + companyName + "<br> " + juridicalForm + " " + reg_no;
+
+                }
             }
-        });
+        }
+
+        function clickedProperty(propertyMarker) {
+            changeMarkerIcon(propertyMarker);
+            console.log("klickat ownerID: " + propertyMarker.ownerID);
+            findAndPrintOwners(ownerObj, propertyMarker.ownerID);
+        }
+
+        function changeMarkerIcon(theMarker) {
+            if (theMarker.showInfo == true) {
+                unclickMarker(theMarker);
+            } else {
+                theMarker.setIcon(blueIcon);
+                theMarker.showInfo = true;
+                if (previousClickedMarker.id != theMarker.id) {
+                    unclickMarker(previousClickedMarker);
+                }
+                previousClickedMarker = theMarker;
+            }
+        }
+
+        function unclickMarker(theMarker) {
+            theMarker.setIcon(redIcon);
+            theMarker.showInfo = false;
+            console.log("återställt markern");
+        }
 
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTGG7XrK5kRzyrpBKEH3ZwQ3wNprTmgDI&libraries=places&callback=initMapAndLayers"></script>
