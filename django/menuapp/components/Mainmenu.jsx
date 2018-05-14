@@ -5,7 +5,6 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 
 export default class Mainmenu extends React.Component {
-
  render() {
    return (
      <Nav className="navbar navbar-inverse bg-light">
@@ -28,4 +27,5 @@ export default class Mainmenu extends React.Component {
    )
  }
 }
+
 

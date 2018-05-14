@@ -49,7 +49,7 @@ class Property(models.Model):
         ordering = ('coord_n', 'coord_e',) # Order by x Coord.
     def __unicode__(self):
         return '%s %s %s' % (self.med_coord.x, self.med_coord.y)
-
+    
 class PropertyBoarder(models.Model):
     internid = models.BigIntegerField()
     detaljtyp = models.CharField(max_length=10)
@@ -61,6 +61,6 @@ class PropertyBoarder(models.Model):
     undskala = models.BigIntegerField()
     knid = models.IntegerField()
     geom = models.MultiLineStringField(srid=4326)
-
+    
     def __unicode__(self):
         return self.internid

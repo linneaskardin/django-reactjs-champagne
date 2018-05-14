@@ -20,7 +20,6 @@ class PropertyOwnerAdmin(admin.ModelAdmin): # Decides what is shown for Property
     list_display=('coname', 'reg_no', 'firstname', 'surname')
     pass # Means that it shouldn't do anything with this class after 'pass'
 class PropertyAdmin(admin.ModelAdmin):
-  
     # Don't know how to display PointField
     pass
 

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 
-
 export default class Mainmenuauth extends React.Component {
  render() {
    return (
