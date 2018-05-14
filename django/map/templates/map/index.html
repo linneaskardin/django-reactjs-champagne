@@ -95,17 +95,30 @@
     <script>
         var map;
         var previousClickedMarker;
-        var blueIcon = 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png';
-        var redIcon = 'https://www.google.com/mapfiles/marker_green.png';
+        var blueIcon = {
+          path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+          fillColor: 'blue',
+          fillOpacity: 0.7,
+          scale: 0.8,
+          strokeColor: 'white',
+          strokeWeight: 3};
+        var redIcon = {
+          path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+          fillColor: 'red',
+          fillOpacity: 0.7,
+          scale: 0.8,
+          strokeColor: 'white',
+          strokeWeight: 3};
         var ownerObj;
         var propertyGEOJSON;
 
         function initMapAndLayers() {
             map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 5,
+                zoom: 17,
                 center: {
-                    lat: 59,
-                    lng: 17
+                  // Location where there is a Property now. Default when geolocation doesn't work //CE
+                    lat: 61.335,
+                    lng: 16.38
                 }
             });
 
@@ -146,35 +159,6 @@
                     clickedProperty(propertyMarker);
                 })
             }
-
-
-            //********************* THIS IS EXPERIMENTAL PLACE FOR CHANGING MARKER COLOR ******************
-
-            testMarker = new google.maps.Marker({
-                map: map,
-                draggable: true,
-                icon: redIcon,
-                animation: google.maps.Animation.DROP,
-                position: {
-                    lat: 59.327,
-                    lng: 33.067
-                },
-                showInfo: false,
-            });
-            testMarker.addListener('click', toggleBounce);
-
-            function toggleBounce() {
-                if (testMarker.showInfo == false) {
-                    testMarker.setIcon(redIcon);
-                    console.log("showInfo är " + testMarker.showInfo);
-                    testMarker.showInfo = true;
-                } else {
-                    testMarker.setIcon(blueIcon);
-                    console.log("showInfo är " + testMarker.showInfo);
-                    testMarker.showInfo = false;
-                }
-            }
-            //********************* END CHANGING MARKER COLOR ******************
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
@@ -253,7 +237,7 @@
         function findAndPrintOwners(ownerObj, ownerID) {
             var i;
             for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match. 
+                if (ownerObj.features[i].properties["pk"] == ownerID) { //IM: loops through the owners to find a match.
                     console.log("Det finns en träff med ägare och property");
                     firstName = ownerObj.features[i].properties["firstname"];
                     surName = ownerObj.features[i].properties["surname"];
