@@ -59,6 +59,7 @@
         #intro-text{
             margin-left: 5%;
             line-height: 10px; 
+            width: auto;
 
         }
 
@@ -217,7 +218,6 @@
                             companyName = ownerObj.features[i].properties["coname"];
                             juridicalForm = ownerObj.features[i].properties["jurform"];
                             reg_no = ownerObj.features[i].properties["reg_no"];
-
                             document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" + "<h5> Namn:      " + firstName + " " + surName + "<h5> Företag:" + companyName +  "<h5> Juridisk form:     " + juridicalForm + " " + "<h5> Organisationsnummer:     " + " " + reg_no;
                             break;
                         }
