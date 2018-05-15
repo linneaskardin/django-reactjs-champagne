@@ -11,7 +11,7 @@ class Command(BaseCommand):
         from django.contrib.gis.geos import Point
         import csv
         # Import data for coordinates
-        with open('data/MEDIAN_09M.txt', 'r', encoding='mac_roman', newline='') as csvmed: # Need encoding mac_roman and newline=''. Don't know why //CE
+        with open('data/MEDIAN_09M.txt', 'r', encoding='iso-8859-1', newline='') as csvmed: # Need encoding mac_roman and newline=''. Don't know why //CE
             readerkoord = csv.reader(csvmed, delimiter=';')
             dictCoord={} # create dictionary to connect data
             wgs84=pyproj.Proj("+init=EPSG:4326") # LatLon with WGS84 datum used by GPS units and Google Earth
@@ -23,38 +23,38 @@ class Command(BaseCommand):
                 pnt = Point(wgs_e, wgs_n)
                 dictCoord[row[3]] = {'med_coord':pnt, 'coord_e':row[6], 'coord_n':row[5]} # Populate dictionary
         # Import data for Property Owners and place in dictionary
-        with open('data/LAGFP_35S.txt','r', encoding='mac_roman',newline='') as csvlag:
+        with open('data/LAGFP_35S.txt','r', encoding='iso-8859-1',newline='') as csvlag:
             readerl = csv.reader(csvlag, delimiter=';')
             dictOwner={} # create dictionary to connect data
             for row in readerl:
                 dictOwner[row[20]] = {'reg_nr':row[21],'firstname':row[23], 'surname':row[25],'jurform':row[26], 'coname':row[27]}
         # Import data for Area and place in dictionary
-        with open('data/AREAL_08A.txt','r', encoding='mac_roman',newline='') as csvar:
+        with open('data/AREAL_08A.txt','r', encoding='iso-8859-1',newline='') as csvar:
             readera = csv.reader(csvar, delimiter=';')
             dictArea={}
             for row in readera:
                 dictArea[row[3]] = {'area':row[7]}
         # Import data for Property Number and place in dictionary
-        with open('data/REGENH_01A.txt','r', encoding='mac_roman',newline='') as csvreg:
+        with open('data/REGENH_01A.txt','r', encoding='iso-8859-1',newline='') as csvreg:
             readerr = csv.reader(csvreg, delimiter=';')
             dictPropNo={}
             for row in readerr:
                 dictPropNo[row[3]] = {'municipality':row[6],'district':row[7],'block':row[8],'sign':row[9],'unity':row[10]}
         # Import data for Property Leaseholders and place in dictionary
-        with open('data/TOMTRP_35T.txt','r', encoding='mac_roman',newline='') as csvtom:
+        with open('data/TOMTRP_35T.txt','r', encoding='iso-8859-1',newline='') as csvtom:
             readert = csv.reader(csvtom, delimiter=';')
             dictLease={}
             for row in readert:
                 if row[20] is not None: # It might be None
                     dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25],'jurform_l':row[26], 'coname_l':row[27]}
         # Import data for Price and place in dictionary
-        with open('data/FASTAGF_35O.txt','r', encoding='mac_roman',newline='') as csvfas:
+        with open('data/FASTAGF_35O.txt','r', encoding='iso-8859-1',newline='') as csvfas:
             readerf = csv.reader(csvfas, delimiter=';')
             dictFas={}
             for row in readerf:
                 if row[5] is not None: # It might be None
                     dictFas[row[5]] = {'fnr':row[7]}
-        with open('data/KOPESK_35P.txt','r', encoding='mac_roman',newline='') as csvkop:
+        with open('data/KOPESK_35P.txt','r', encoding='iso-8859-1',newline='') as csvkop:
             readerk = csv.reader(csvkop, delimiter=';')
             dictKop={}
             for row in readerk:
