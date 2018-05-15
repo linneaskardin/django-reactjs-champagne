@@ -17,7 +17,7 @@ export default class Mainmenuauth extends React.Component {
      <li><a href= "/about"> Om Toolgate Maps </a></li>
    </ul>
    <ul className="nav navbar-nav navbar-right">  
-     <li><a href="/accounts/logout"><span className="glyphicon glyphicon-log-in"></span> Logga Ut </a></li>
+     <li><a href="/accounts/logout"><span className="glyphicon glyphicon-log-in"></span>  </a></li>
    </ul>
  </div>
 </Nav>

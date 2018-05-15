@@ -1,4 +1,9 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} 
+{% load render_bundle from webpack_loader %} 
+{% load bootstrap4 %} 
+{% block title %}Index{% endblock %} 
+{% block main %} 
+{% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -18,18 +23,22 @@
 
         #map {
             height: 100%;
-            width: 90%;
-            margin-left: auto;
-            margin-right: auto;
+            width: 71%;
+            margin-left: 3%;
         }
 
         /* Optional: Makes the sample page fill the window. */
-
         html,
         body {
             height: 80%;
             margin: 0;
             padding: 0;
+        }
+
+                #intro-text {
+            margin-left: 3%;
+            line-height: 10px; 
+            width: auto;
         }
 
         #infowindow-content {
@@ -42,24 +51,17 @@
 
         #info-box {
             height: auto;
-            width: 30%;
+            width: 20%;
             background-color: white;
             text-indent: 15px;
-            margin: auto;
+            float: right;
+            margin-right: 3%;
+            margin-top: -363pt;
         }
 
         #citySearch {
             margin: 1%;
-            margin-left: 5%;
-
-        }
-
-        #intro-text {
-            margin-left: 5%;
-
-            line-height: 10px; 
-            width: auto;
-
+            margin-left: 3%;
 
         }
 
@@ -78,7 +80,8 @@
         <p>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
-    <div id="map"></div>
+
+    <div id="map" ></div>
     <div id="info-box"></div>
     {% else %}
 
@@ -88,8 +91,8 @@
     <div class="jumbotron text-center">
         <h1>Du är inte inloggad!</h1>
         <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
-        <a href="{% url 'login' %}" class="btn btn-primary">Logga In</a>
-        <a href="{% url 'signup' %}" class="btn btn-primary">Skapa Konto</a>
+        <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary">Skapa konto</a>
 
     </div>
     {% endif %}
@@ -298,11 +301,11 @@
             console.log("köpeskilling fast o lös: " + price_fa + " " + price_lo + " från datum: " + price_date);
 
             document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" +
-                "<h5> Namn:      " + firstName + " " + surName +
+                "<h5> Fastighetsbeteckning: " + fast_bet + " " +
+                "<h5> Namn ägare:      " + firstName + " " + surName +
                 "<h5> Företag: " + companyName + " " +
                 "<h5> Organisationsnummer:     " + " " + reg_no +
-                "<h5> Area: " + area + " " +
-                "<h5> Fastighetsbeteckning: " + fast_bet + " " +
+                "<h5> Area: " + area + " " +  
                 "<h5> Fast Köpeskilling: " + price_fa + " " +
                 "<h5> Datum senaste köp: " + price_date + " ";
         }
