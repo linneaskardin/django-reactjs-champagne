@@ -1,0 +1,19 @@
+<!-- templates/signup.html -->
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load render_bundle from webpack_loader %}
+{% block title %}Sign Up{% endblock %}
+
+
+{% block main %}
+<div id="MenuAppAuth"></div>
+{% render_bundle 'vendors' %}
+{% render_bundle 'MenuAppAuth' %}
+<div class="container" style="background-color: #f2f2f2">
+    <div class="row">
+        <div class="col-sm-6">
+        <h2>Min sida</h2>
+        </div>
+    </div>
+   </div>
+{% endblock %}
