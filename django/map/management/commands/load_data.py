@@ -47,6 +47,12 @@ class Command(BaseCommand):
             for row in readert:
                 if row[20] is not None: # It might be None
                     dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25], 'coname_l':row[27]}
+        # Import data for Taxation value and place in dictionary
+        with open('data/TAXENH_40A.txt','r', encoding='iso-8859-1',newline='') as csvar:
+            readerta = csv.reader(csvar, delimiter=';')
+            dictTax={}
+            for row in readerta:
+                dictTax[row[3]] = {'taxation_year':row[15],'taxation_land':row[11],'taxation_build':row[12]}
         # Import data for Price and place in dictionary
         # Connection table between KOPESK and Property
         with open('data/FASTAGF_35O.txt','r', encoding='iso-8859-1',newline='') as csvfas:
@@ -85,43 +91,91 @@ class Command(BaseCommand):
             if key in dictCoord: # some PropertyOwners don't have coordinates
                 if key in dictArea and key in dictPrice:
                     if key in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]} # pull values and merge them
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key],**dictTax[key]} # pull values and merge them
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]}
                     elif key in dictLease and key not in dictPriceLease:
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key],**dictTax[key]}
+                        else:
                             value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key]}
                     elif key not in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictPriceLease[key]}
                     else:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key]}
 
                 elif key in dictArea and key not in dictPrice:
                     if key in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key],**dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key],**dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key],**dictPriceLease[key]}
                     elif key in dictLease and key not in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key]}
                     elif key not in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPriceLease[key]}
                     else:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key]}
 
                 elif key not in dictArea and key in dictPrice:
                     if key in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]}
                     elif key in dictLease and key not in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key], **dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key]}
                     elif key not in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictPriceLease[key]}
                     else:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key]}
 
                 else:
                     if key in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key],**dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key],**dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key],**dictPriceLease[key]}
                     elif key in dictLease and key not in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key]}
                     elif key not in dictLease and key in dictPriceLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPriceLease[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPriceLease[key],**dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPriceLease[key]}
                     else:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]}
+                        if key in dictTax:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictTax[key]}
+                        else:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]}
                 z[key] = value # add the new values to z
         # Populate model fields
         for key,value in z.items():
@@ -130,28 +184,59 @@ class Command(BaseCommand):
             coname=z.get(key,{'coname':'NA'})['coname'])
             q.save()
             if key in dictArea and key in dictPrice:
-                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
-                district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
-                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
+                if key in dictTax:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
+                    price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'],
+                    taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],taxation_build=z.get(key,{'taxation_build':'NA'})['taxation_build'],taxation_year=z.get(key,{'taxation_year':'NA'})['taxation_year'])
+                else:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
+                    price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
             # Fields that don't exist become None
             elif key in dictArea and key not in dictPrice:
-                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
-                district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd')
+                if key in dictTax:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd',taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],
+                    taxation_build=z.get(key,{'taxation_build':'NA'})['taxation_build'],taxation_year=z.get(key,{'taxation_year':'NA'})['taxation_year'])
+                else:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd')
             elif key not in dictArea and key in dictPrice:
-                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
-                district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
-                price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
+                if key in dictTax:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
+                    price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'],
+                    taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],taxation_build=z.get(key,{'taxation_build':'NA'})['taxation_build'],
+                    taxation_year=z.get(key,{'taxation_year':'NA'})['taxation_year'])
+                else:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
+                    price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
             else:
-                y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
-                coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
-                district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                unity=z.get(key,{'unity':'NA'})['unity'])
+                if key in dictTax:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],taxation_build=z.get(key,{'taxation_build':'NA'})['taxation_build'],
+                    taxation_year=z.get(key,{'taxation_year':'NA'})['taxation_year'])
+                else:
+                    y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
+                    coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
+                    district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
+                    unity=z.get(key,{'unity':'NA'})['unity'])
             y.save()
             y.owners.add(q)
             if key in dictLease:
