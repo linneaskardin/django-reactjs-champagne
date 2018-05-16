@@ -28,10 +28,10 @@ class Waypoint(models.Model):
 # INFO FROM LANTMÄTERIET
 class PropertyOwner(models.Model):
     reg_no = models.CharField('Organisationsnummer', null=True, max_length=13)
-    coname = models.CharField('Firmanamn', max_length=300, default = None, null = True)
+    coname = models.CharField('Firmanamn', max_length=300, default = '', null = True)
     # Info regaring individuals. Might be omitted later /CE
-    firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
-    surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
+    firstname = models.CharField('Förnamn', max_length=80, default = '', null = True)
+    surname = models.CharField('Efternamn', max_length=100, default = '', null = True)
 
     class Meta:
         ordering = ('coname', 'surname',) # Order by coname. Makes blank conames come first so it's not optimal /CE
@@ -39,10 +39,10 @@ class PropertyOwner(models.Model):
         return (self.coname)
 
 class LeaseHolder(models.Model): # Tomträttsinnehavare
-    coname = models.CharField('Firmanamn', max_length=300, default = None, null = True)
+    coname = models.CharField('Firmanamn', max_length=300, default = '', null = True)
     # Info regaring individuals. Might be omitted later /CE
-    firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
-    surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
+    firstname = models.CharField('Förnamn', max_length=80, default = '', null = True)
+    surname = models.CharField('Efternamn', max_length=100, default = '', null = True)
     price_fa = models.CharField('Köpeskilling fast egendom',max_length=36,default = '', null=True) # Comes as a string when missing
     currency_fa = models.CharField('Valuta fast egendom',max_length=5, default = '', null=True)
     price_lo = models.CharField('Köpeskilling lös egendom',max_length=36, default = '', null=True) # Comes as a string when missing

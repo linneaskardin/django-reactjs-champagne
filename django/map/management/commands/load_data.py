@@ -203,13 +203,13 @@ class Command(BaseCommand):
                     y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                     coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                     district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd',taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],
+                    unity=z.get(key,{'unity':'NA'})['unity'],taxation_land=z.get(key,{'taxation_land':'NA'})['taxation_land'],
                     taxation_build=z.get(key,{'taxation_build':'NA'})['taxation_build'],taxation_year=z.get(key,{'taxation_year':'NA'})['taxation_year'])
                 else:
                     y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                     coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                     district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                    unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd')
+                    unity=z.get(key,{'unity':'NA'})['unity'])
             elif key not in dictArea and key in dictPrice:
                 if key in dictTax:
                     y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
