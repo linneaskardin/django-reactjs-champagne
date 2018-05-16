@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from django.template import loader
 from django.http import HttpResponse
-from .models import Punkt, Waypoint, Property, PropertyBoarder, PropertyOwner
+from .models import Punkt, Waypoint, Property, PropertyBoarder, PropertyOwner, LeaseHolder
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
@@ -27,7 +27,8 @@ def waypoint_datasets(request):
 def property_datasets(request):
     #punkter = serialize('geojson', Property.objects.all())
 
-    punkter = serialize('geojson', Property.objects.filter(pk__lte=20)) #gte = greater/equal than, lte = less/equal than
+    punkter = serialize('geojson', Property.objects.filter(pk__lte=30)) #gte = greater/equal than, lte = less/equal than
+    #Property.objects.filter(coord_n__lte=6740000))
 
     return HttpResponse(punkter, content_type='json')
 
@@ -36,6 +37,11 @@ def propertyOwner_datasets(request):
 
     punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
 
+    return HttpResponse(punkter, content_type='json')
+
+def leaseHolder_datasets(request):
+    #punkter = serialize('geojson', Property.objects.all())
+    punkter = serialize('geojson',  LeaseHolder.objects.filter(pk__lte=300)) #gte = greater/equal than, lte = less/equal than
     return HttpResponse(punkter, content_type='json')
 
 def propertyBoarder_datasets(request):

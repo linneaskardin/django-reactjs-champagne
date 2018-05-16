@@ -1,9 +1,4 @@
-{% extends "base.html" %} 
-{% load render_bundle from webpack_loader %} 
-{% load bootstrap4 %} 
-{% block title %}Index{% endblock %} 
-{% block main %} 
-{% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -28,6 +23,7 @@
         }
 
         /* Optional: Makes the sample page fill the window. */
+
         html,
         body {
             height: 80%;
@@ -35,9 +31,9 @@
             padding: 0;
         }
 
-                #intro-text {
+        #intro-text {
             margin-left: 3%;
-            line-height: 10px; 
+            line-height: 10px;
             width: auto;
         }
 
@@ -81,7 +77,7 @@
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
 
-    <div id="map" ></div>
+    <div id="map"></div>
     <div id="info-box"></div>
     {% else %}
 
@@ -101,6 +97,7 @@
         var map;
         var previousClickedMarker;
         var ownerObj;
+        var leaseHolderObj;
         var propertyGEOJSON;
         var blueIcon = {
             path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
@@ -118,6 +115,8 @@
             strokeColor: 'white',
             strokeWeight: 3
         };
+        var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+        var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
 
 
         function initMapAndLayers() {
@@ -176,6 +175,7 @@
                 lat = propertyGEOJSON.features[i].geometry.coordinates[0];
                 lng = propertyGEOJSON.features[i].geometry.coordinates[1];
                 ownerID = propertyGEOJSON.features[i].properties.owners;
+                leaseHolderID = propertyGEOJSON.features[i].properties.leaseholders;
 
                 var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
                     latLng = new google.maps.LatLng(lng, lat);
@@ -186,6 +186,7 @@
                     map: map,
                     icon: redIcon,
                     ownerID: ownerID,
+                    leaseHolderID: leaseHolderID,
                     showInfo: false,
                     id: i,
                     dbInfo: propertyGEOJSON.features[i].properties,
@@ -213,18 +214,32 @@
             });
 
             createSearchBoxCities(map);
+            createOwnersObject();
+            createLeaseHoldersObject();
         }
 
-        const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
-        $.ajax({
-            url: ownersURL,
-            success: function(result) {
-                ownerObj = result;
-            }
 
-        });
 
         //************* FUNCTIONS UNDER HERE *****************
+
+        function createOwnersObject() {
+            // const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+            $.ajax({
+                url: ownersURL,
+                success: function(result) {
+                    ownerObj = result;
+                }
+            });
+        }
+
+        function createLeaseHoldersObject() {
+            $.ajax({
+                url: leaseHoldersURL,
+                success: function(result) {
+                    leaseHolderObj = result;
+                }
+            });
+        }
 
         function createSearchBoxCities(map) {
             var input = document.getElementById('citySearch');
@@ -271,25 +286,39 @@
             });
         }
 
-        function findAndPrintOwners(ownerObj, theProperty) {
+        function findAndPrintOwners(theProperty) {
             var i;
             for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID) { //IM: loops through the owners to find a match. 
-                    writeToInfobox(ownerObj.features[i], theProperty);
+                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them. 
+                    var leaseHolderFeatures = findLeaseHolders(theProperty);
+                    writeToInfobox(ownerObj.features[i], leaseHolderFeatures, theProperty);
                     break;
                 }
             }
         }
 
+        function findLeaseHolders(theProperty) {
+            console.log(theProperty.leaseHolderID);
+            var i;
+            for (i = 0; i < leaseHolderObj.features.length; i++) {
+                if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one. 
+                    console.log("Det finns en tomträttsinnehavare");
+                    return (leaseHolderObj.features[i]);
+                }
+            }
+            return ("NoMatch");
+        }
 
-        function writeToInfobox(ownerFeatures, theProperty) {
+        function writeToInfobox(ownerFeatures, leaseHolderFeatures, theProperty) {
             console.log("Det finns en träff med ägare och property");
+            //Variables about the first owner
             firstName = ownerFeatures.properties["firstname"];
             surName = ownerFeatures.properties["surname"];
             companyName = ownerFeatures.properties["coname"];
             juridicalForm = ownerFeatures.properties["jurform"];
             reg_no = ownerFeatures.properties["reg_no"];
 
+            //Variables about the property
             area = theProperty.dbInfo.area;
             municipality = theProperty.dbInfo.municipality;
             fast_bet = theProperty.dbInfo.district + " " + theProperty.dbInfo.unity + theProperty.dbInfo.sign + theProperty.dbInfo.block;
@@ -297,17 +326,39 @@
             price_lo = theProperty.dbInfo.price_lo + " (" + theProperty.dbInfo.currency_lo + ")";
             price_date = theProperty.dbInfo.price_date;
 
-            console.log("fast_bet: " + fast_bet);
-            console.log("köpeskilling fast o lös: " + price_fa + " " + price_lo + " från datum: " + price_date);
+            document.getElementById('info-box').innerHTML = "<h4><b> Fastighetsinformation</b>" +
+                "<h5><b>Fastighetsbeteckning:</b> " + fast_bet + " " +
+                "<h5><b> Namn ägare:</b>      " + firstName + " " + surName +
+                "<h5><b> Företag:</b> " + companyName + " " +
+                "<h5><b> Organisationsnummer:</b>     " + " " + reg_no +
+                "<h5><b> Area:</b> " + area + " " +
+                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
+                "<h5><b> Datum senaste köp:</b> " + price_date + " ";
 
-            document.getElementById('info-box').innerHTML = "<h4> Fastighetsinformation" +
-                "<h5> Fastighetsbeteckning: " + fast_bet + " " +
-                "<h5> Namn ägare:      " + firstName + " " + surName +
-                "<h5> Företag: " + companyName + " " +
-                "<h5> Organisationsnummer:     " + " " + reg_no +
-                "<h5> Area: " + area + " " +  
-                "<h5> Fast Köpeskilling: " + price_fa + " " +
-                "<h5> Datum senaste köp: " + price_date + " ";
+            if (leaseHolderFeatures == "NoMatch") {
+                console.log("Tomten har ingen tomträttsinnehavare");
+                document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+                    "<h6> Vald tomt har ingen tomträtt";
+            } else {
+                writeLeaseHolder(leaseHolderFeatures);
+            }
+
+            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+                "<h6> Tom rad innebär att informationen inte är tillgänglig hos lantmäteriet";
+
+        }
+
+        function writeLeaseHolder(leaseHolderFeatures) {
+
+            //Variables about the first lease holder
+            firstName = leaseHolderFeatures.properties["firstname"];
+            surName = leaseHolderFeatures.properties["surname"];
+            companyName = leaseHolderFeatures.properties["coname"];
+
+            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+                "<h4><b>Tomträttsinnehavare:</b>" +
+                "<h5><b> Namn:</b> " + firstName + " " + surName +
+                "<h5><b> Företag:</b> " + companyName;
         }
 
         function clickedProperty(theMarker) {
@@ -319,7 +370,7 @@
                 if (previousClickedMarker.id != theMarker.id) {
                     unclickMarker(previousClickedMarker);
                 }
-                findAndPrintOwners(ownerObj, theMarker);
+                findAndPrintOwners(theMarker);
                 previousClickedMarker = theMarker;
 
             }
