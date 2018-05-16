@@ -46,8 +46,9 @@ class Command(BaseCommand):
             dictLease={}
             for row in readert:
                 if row[20] is not None: # It might be None
-                    dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25],'jurform_l':row[26], 'coname_l':row[27]}
+                    dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25], 'coname_l':row[27]}
         # Import data for Price and place in dictionary
+        # Connection table between KOPESK and Property
         with open('data/FASTAGF_35O.txt','r', encoding='iso-8859-1',newline='') as csvfas:
             readerf = csv.reader(csvfas, delimiter=';')
             dictFas={}
@@ -65,11 +66,16 @@ class Command(BaseCommand):
             if key in dictFas:
                 value = {**dictKop[key], **dictFas[key]}
                 d[key] = value
-        # Create dictPrice with fnr as a key
+        # Create dictPrice and dictPriceLease with fnr as a key
         dictPrice = {}
+        dictPriceLease = {}
         # Since the data is sorted on date and serial number in the .txt-file, the latest sale will be overwrite earlier sales
         for key,value in d.items():
             dictPrice[d.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':d.get(key,{'currency_fa':'NA'})['currency_fa'],
+            'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
+            'price_lo':d.get(key,{'price_lo':'NA'})['price_lo'],'price_date':d.get(key,{'price_date':'NA'})['price_date']}
+
+            dictPriceLease[d.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':d.get(key,{'currency_fa':'NA'})['currency_fa'],
             'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
             'price_lo':d.get(key,{'price_lo':'NA'})['price_lo'],'price_date':d.get(key,{'price_date':'NA'})['price_date']}
 
@@ -78,23 +84,42 @@ class Command(BaseCommand):
         for key,value in dictOwner.items():# iterator over e
             if key in dictCoord: # some PropertyOwners don't have coordinates
                 if key in dictArea and key in dictPrice:
-                    if key in dictLease:
-                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key]} # pull values and merge them
+                    if key in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]} # pull values and merge them
+                    elif key in dictLease and key not in dictPriceLease:
+                            value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictLease[key]}
+                    elif key not in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key], **dictPriceLease[key]}
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPrice[key]}
+
                 elif key in dictArea and key not in dictPrice:
-                    if key in dictLease:
+                    if key in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key],**dictPriceLease[key]}
+                    elif key in dictLease and key not in dictPriceLease:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictLease[key]}
+                    elif key not in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key], **dictPriceLease[key]}
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictArea[key]}
+
                 elif key not in dictArea and key in dictPrice:
-                    if key in dictLease:
+                    if key in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key],**dictPriceLease[key]}
+                    elif key in dictLease and key not in dictPriceLease:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictLease[key]}
+                    elif key not in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key], **dictPriceLease[key]}
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPrice[key]}
+
                 else:
-                    if key in dictLease:
+                    if key in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key],**dictPriceLease[key]}
+                    elif key in dictLease and key not in dictPriceLease:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictLease[key]}
+                    elif key not in dictLease and key in dictPriceLease:
+                        value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key], **dictPriceLease[key]}
                     else:
                         value = {**dictCoord[key], **dictOwner[key], **dictPropNo[key]}
                 z[key] = value # add the new values to z
@@ -102,7 +127,7 @@ class Command(BaseCommand):
         for key,value in z.items():
             q = PropertyOwner(reg_no=z.get(key,{'reg_nr':'NA'})['reg_nr'],
             firstname=z.get(key,{'firstname':'NA'})['firstname'],surname=z.get(key,{'surname':'NA'})['surname'],
-            coname=z.get(key,{'coname':'NA'})['coname'],jurform=z.get(key,{'jurform':'NA'})['jurform'])
+            coname=z.get(key,{'coname':'NA'})['coname'])
             q.save()
             if key in dictArea and key in dictPrice:
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
@@ -110,7 +135,7 @@ class Command(BaseCommand):
                 district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
                 unity=z.get(key,{'unity':'NA'})['unity'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],
                 price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
-            # Price becomes 'okänd' when info doesn't exist. Area and other Fields become None
+            # Fields that don't exist become None
             elif key in dictArea and key not in dictPrice:
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], area=z.get(key,{'area':'NA'})['area'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
@@ -126,12 +151,18 @@ class Command(BaseCommand):
                 y = Property(med_coord=z.get(key,{'med_coord':'NA'})['med_coord'], coord_e=z.get(key,{'coord_e':'NA'})['coord_e'],
                 coord_n=z.get(key,{'coord_n':'NA'})['coord_n'], municipality=z.get(key,{'municipality':'NA'})['municipality'],
                 district=z.get(key,{'district':'NA'})['district'],block=z.get(key,{'block':'NA'})['block'],sign=z.get(key,{'sign':'NA'})['sign'],
-                unity=z.get(key,{'unity':'NA'})['unity'],price_fa='okänd',price_lo='okänd')
+                unity=z.get(key,{'unity':'NA'})['unity'])
             y.save()
             y.owners.add(q)
             if key in dictLease:
-                l = LeaseHolder(firstname=z.get(key,{'firstname_l':'NA'})['firstname_l'],surname=z.get(key,{'surname_l':'NA'})['surname_l'],
-                coname=z.get(key,{'coname_l':'NA'})['coname_l'],jurform=z.get(key,{'jurform_l':'NA'})['jurform_l'])
+                if key in dictPriceLease:
+                    l = LeaseHolder(firstname=z.get(key,{'firstname_l':'NA'})['firstname_l'],surname=z.get(key,{'surname_l':'NA'})['surname_l'],
+                    coname=z.get(key,{'coname_l':'NA'})['coname_l'],price_fa=z.get(key,{'price_fa':'NA'})['price_fa'],
+                    currency_fa=z.get(key,{'currency_fa':'NA'})['currency_fa'],price_lo=z.get(key,{'price_lo':'NA'})['price_lo'],
+                    currency_lo=z.get(key,{'currency_lo':'NA'})['currency_lo'],price_date=z.get(key,{'price_date':'NA'})['price_date'])
+                else:
+                    l = LeaseHolder(firstname=z.get(key,{'firstname_l':'NA'})['firstname_l'],surname=z.get(key,{'surname_l':'NA'})['surname_l'],
+                    coname=z.get(key,{'coname_l':'NA'})['coname_l'])
                 l.save()
                 y.leaseholders.add(l)
 
