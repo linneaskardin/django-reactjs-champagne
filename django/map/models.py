@@ -64,6 +64,9 @@ class Property(models.Model):
     price_lo = models.CharField('Köpeskilling lös egendom',max_length=36, default = '', null=True) # Comes as a string when missing
     currency_lo = models.CharField('Valuta lös egendom',max_length=5, default = '', null=True)
     price_date = models.CharField('Försäljningsdatum',max_length=8,null=True,default='')
+    taxation_year = models.CharField('Taxeringsår', max_length=4,null=True,default='')
+    taxation_land = models.CharField('Taxeringsvärde på mark', max_length=7,null=True,default='')
+    taxation_build = models.CharField('Taxeringsvärde på byggnad(er)',max_length=9,null=True,default='')
     coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
     coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
