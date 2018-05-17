@@ -44,7 +44,7 @@
         #map #infowindow-content {
             display: inline;
         }
-            
+
         #info-box {
             height: auto;
             width: 20%;
@@ -54,7 +54,7 @@
             margin-right: 3%;
             margin-top: -363pt;
         }
-        
+
         #info-box-tomtratt {
             height: auto;
             width: 20%;
@@ -160,11 +160,11 @@
                     });
                     map.setCenter(pos);
                 }, function() {
-                    handleLocationError(true, locationMarker, map.getCenter());
+                    handleLocationError(true, map.getCenter());
                 });
             } else {
                 // Browser doesn't support Geolocation
-                handleLocationError(false, locationMarker, map.getCenter());
+                handleLocationError(false, map.getCenter());
             }
 
             previousClickedMarker = new google.maps.Marker({ //Sets values so it's not null.
@@ -300,7 +300,7 @@
         function findAndPrintOwners(theProperty) {
             var i;
             for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them. 
+                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
                     var leaseHolderFeatures = findLeaseHolders(theProperty);
                     writeToInfobox(ownerObj.features[i], leaseHolderFeatures, theProperty);
                     break;
@@ -312,7 +312,7 @@
             console.log(theProperty.leaseHolderID);
             var i;
             for (i = 0; i < leaseHolderObj.features.length; i++) {
-                if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one. 
+                if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one.
                     console.log("Det finns en tomträttsinnehavare");
                     return (leaseHolderObj.features[i]);
                 }
@@ -354,44 +354,44 @@
             taxation_year = theProperty.dbInfo.taxation_year;
             taxation_land = theProperty.dbInfo.taxation_land * 1000;
             taxation_build = theProperty.dbInfo.taxation_build * 1000;
-            
+
             console.log("Denna tomt har en lös köpeskilling: "+theProperty.dbInfo.price_lo);
-                        
+
             textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
             console.log("H"+firstName+"H");
             console.log(typeof firstName);
             if (firstName === '' && surName === ''){
                 console.log("=== funkade");
-                textTillInfobox = textTillInfobox + 
+                textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b> " + companyName +
                     "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
                 console.log(textTillInfobox);
                 }
             else if (companyName === '' ){
-                textTillInfobox = textTillInfobox + 
+                textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b>      " + firstName + " " + surName;
             }
-            
-            textTillInfobox = textTillInfobox + 
+
+            textTillInfobox = textTillInfobox +
                 "<h5><b> Area:</b> " + area + " kvm" +
                 "<br><br><h4><b> Prisinformation</b> " +
                 "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK"+
                 "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK"+
                 "<h5><b> Taxeringsår:</b> " + taxation_year;
-            
-            
-            
-            textTillInfobox = textTillInfobox + 
+
+
+
+            textTillInfobox = textTillInfobox +
                 "<h5><b> Fast Köpeskilling:</b> " + price_fa;
-            
+
             if (theProperty.dbInfo.price_lo != '') {
-                textTillInfobox = textTillInfobox + 
+                textTillInfobox = textTillInfobox +
                 "<h5><b> Lös Köpeskilling:</b> " + price_lo;
-            } 
-            
-            textTillInfobox = textTillInfobox + 
+            }
+
+            textTillInfobox = textTillInfobox +
                 "<h5><b> Köpdatum:</b> " + price_date;
-            
+
             document.getElementById('info-box').innerHTML = textTillInfobox;
         }
 
@@ -436,8 +436,9 @@
             document.getElementById('info-box').innerHTML = "";
         }
 
-        function handleLocationError(browserHasGeolocation, locationMarker, pos) {
+        function handleLocationError(browserHasGeolocation, pos) {
 
+            alert("Din webläsare stödjer inte platsfunktion. Det kan bero på dina inställningar. Stäng för att fortsätta till kartan.");
             // Put LocationError handlers //CE
         }
 
