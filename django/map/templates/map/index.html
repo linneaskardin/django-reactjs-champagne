@@ -107,6 +107,7 @@
     <script>
         var map;
         var previousClickedMarker;
+        var propertyMarkers = [];
         var ownerObj;
         var leaseHolderObj;
         var propertyGEOJSON;
@@ -217,11 +218,16 @@
 
         //************* FUNCTIONS UNDER HERE *****************
 
-        function createMarker(i, map) {
-            lat = propertyGEOJSON.features[i].geometry.coordinates[0];
-            lng = propertyGEOJSON.features[i].geometry.coordinates[1];
-            ownerID = propertyGEOJSON.features[i].properties.owners;
-            leaseHolderID = propertyGEOJSON.features[i].properties.leaseholders;
+        function createMarker(i, map, propertyFeatures) {
+            //            lat = propertyGEOJSON.features[i].geometry.coordinates[0];
+            //            lng = propertyGEOJSON.features[i].geometry.coordinates[1];
+            //            ownerID = propertyGEOJSON.features[i].properties.owners;
+            //            leaseHolderID = propertyGEOJSON.features[i].properties.leaseholders;
+
+            lat = propertyFeatures.geometry.coordinates[0];
+            lng = propertyFeatures.geometry.coordinates[1];
+            ownerID = propertyFeatures.properties.owners;
+            leaseHolderID = propertyFeatures.properties.leaseholders;
 
             var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
                 latLng = new google.maps.LatLng(lng, lat);
@@ -235,7 +241,8 @@
                 leaseHolderID: leaseHolderID,
                 showInfo: false,
                 id: i,
-                dbInfo: propertyGEOJSON.features[i].properties,
+                draggable: true,
+                dbInfo: propertyFeatures.properties // propertyGEOJSON.features[i].properties,
             });
             //console.log(latLng.toString());
 
@@ -246,18 +253,30 @@
         }
 
         function hasMapBoundsChanged(map, aMarker) {
-            var propertyMarkers = [];
-            map.addListener('center_changed', function() {
+            //map.addListener('center_changed', function() {
+            map.addListener('click', function() {
                 var coords = getScreenCoords(map);
-                deleteMarkers(propertyMarkers, map);
-                //alert("nu ska de vara deletade");
-                propertyMarkers = addMarkers(coords, map);
+                changeMarkers(map, coords);
+
+            })
+            //            map.addListener('click', function() {
+            //                aMarker.setMap(null);
+            //            })
+        }
+
+        function changeMarkers(map, coords) {
+            if (deleteMarkers(map)) {
+                //alert("ska ha deletat, i is-sats");
+
+                console.log("ska ha deletat, i ifsats");
                 console.log(propertyMarkers);
-                
-            })
-            map.addListener('click', function(){
-                aMarker.setMap(null);
-            })
+                console.log("putInOneFunction innan");
+                addMarkers(coords, map);
+                console.log(propertyMarkers);
+                console.log("putInOneFunction efter");
+            }
+            //alert("nu ska de vara deletade");
+
         }
 
         function getScreenCoords(map) {
@@ -267,18 +286,25 @@
             return [centerLat, centerLng];
         }
 
-        function deleteMarkers(propertyMarkers, map) {
+        function deleteMarkers(map) {
+            console.log(propertyMarkers);
+            console.log("deleteMarkers");
             if (!Array.isArray(propertyMarkers) || !propertyMarkers.length) {
                 console.log("There are no markers in the markers-array.");
             } else {
                 console.log('katten');
-                for (var i = 0; i < propertyMarkers.length; i++) {
-                    console.log(propertyMarkers[i]);
-                    propertyMarkers[i].setMap(null);
-                }
+
+                // Clear out the old markers.
+                propertyMarkers.forEach(function(marker) {
+                    marker.setMap(null);
+                    // marker.visible = false;
+                });
                 propertyMarkers = [];
+
             }
+            console.log(propertyMarkers);
             console.log("deletat markers");
+            return true
         }
 
         function addMarkers(coords, map) {
@@ -295,10 +321,12 @@
                     propertyGEOJSON = result;
                     var markers = [];
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
-                        markers.push(createMarker(i, map));
+                        //   markers.push(createMarker(i, map));
+                        propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
                     }
                     console.log("skapat markers från mittenkoord: " + coords);
-                    return markers;
+                    console.log(propertyMarkers);
+                    console.log("addMarkers före ");
                 }
             });
         }
