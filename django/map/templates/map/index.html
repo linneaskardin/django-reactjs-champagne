@@ -199,19 +199,13 @@
                 }
             });
 
-            var aMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(59.84988041649282, 17.62091160070554),
-                map: map,
-                showInfo: false,
-                id: -5,
-            });
 
             createSearchBoxCities(map);
-            createOwnersObject();
+            updateOwnersObject();
             createLeaseHoldersObject();
 
 
-            hasMapBoundsChanged(map, aMarker);
+            hasMapBoundsChanged(map);
         }
 
 
@@ -252,31 +246,38 @@
             return propertyMarker;
         }
 
-        function hasMapBoundsChanged(map, aMarker) {
+        function hasMapBoundsChanged(map) {
+            var mouseIsReleased = false;
+            var mapCenterChanged = false;
+
             //map.addListener('center_changed', function() {
             map.addListener('click', function() {
-                var coords = getScreenCoords(map);
-                changeMarkers(map, coords);
+                updateOwnersObject();
+                changeMarkers(map);
+            });
+            
+            /* map.onmouseup = function(){
 
-            })
-            //            map.addListener('click', function() {
-            //                aMarker.setMap(null);
-            //            })
+                            document.getElementById('map').onmousedown = function() {
+
+                       console.log("center changed");
+                       mouseIsReleased = mouseStatus(map);
+                       if (mouseIsReleased) {
+                           alert("change markers");                         
+                           mouseIsReleased = false;
+                           mapCenterChanged = false;
+                       }
+                      map.addListener("mouseup", mouseupFunction, {
+                    once: true
+                });
+                // map.removeListener("mouseup", mouseupFunction);  */
         }
 
-        function changeMarkers(map, coords) {
+
+        function changeMarkers(map) {
             if (deleteMarkers(map)) {
-                //alert("ska ha deletat, i is-sats");
-
-                console.log("ska ha deletat, i ifsats");
-                console.log(propertyMarkers);
-                console.log("putInOneFunction innan");
-                addMarkers(coords, map);
-                console.log(propertyMarkers);
-                console.log("putInOneFunction efter");
+                addMarkers(map);
             }
-            //alert("nu ska de vara deletade");
-
         }
 
         function getScreenCoords(map) {
@@ -307,7 +308,8 @@
             return true
         }
 
-        function addMarkers(coords, map) {
+        function addMarkers(map) {
+            var coords = getScreenCoords(map);
             $.ajax({
                 url: 'http://localhost:8000/toolgate_maps/properties_data/',
                 type: 'POST',
@@ -317,26 +319,37 @@
                     centerLng: coords[1],
                 },
                 success: function(result) {
-                    console.log('has successsfully mada an ajaxcall');
+                    console.log('has successsfully mada an ajaxcall. addMarkers');
                     propertyGEOJSON = result;
                     var markers = [];
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
                         //   markers.push(createMarker(i, map));
                         propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
                     }
-                    console.log("skapat markers från mittenkoord: " + coords);
-                    console.log(propertyMarkers);
-                    console.log("addMarkers före ");
+                    //                    console.log("skapat markers från mittenkoord: " + coords);
+                    //                    console.log(propertyMarkers);
+                    //                    console.log("addMarkers före ");
                 }
             });
+
+            updateOwnersObject();
         }
 
-        function createOwnersObject() {
+        function updateOwnersObject() {
+            var coords = getScreenCoords(map);
             // const ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
             $.ajax({
                 url: ownersURL,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                    centerLat: coords[0],
+                    centerLng: coords[1],
+                },
                 success: function(result) {
+                    console.log('has successsfully mada an ajaxcall. updateOwnersObject');
                     ownerObj = result;
+                    console.log(ownerObj);
                 }
             });
         }
@@ -394,6 +407,7 @@
                 map.fitBounds(bounds);
             });
         }
+
 
         function findAndPrintOwners(theProperty) {
             var i;

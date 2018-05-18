@@ -24,37 +24,42 @@ def waypoint_datasets(request):
     return HttpResponse(waypoints, content_type='json')
 
 def property_datasets(request):
-    #punkter = serialize('geojson', Property.objects.all())
-    
     print("i punkters view.")
 
-    
     if (request.method == 'POST'):
-        print("i if")
-        print("it is a POST-anrop i property-viewen")
         centerLat = float(request.POST.get('centerLat'))
         centerLng = float(request.POST.get('centerLng'))
-        print(centerLat)
-        print(centerLng)
         
         point = Point(centerLng, centerLat)
         pnt = GEOSGeometry(point, srid=4326)
         print(pnt)
         
-        thePoints = serialize('geojson', Property.objects.filter(med_coord__distance_lte=(pnt, D(m=200))))
+        print("jomjom")
+        print(Property.objects.filter(med_coord__distance_lte=(pnt, D(m=200))))
+        print("hejsvej")
+        
+        thePoints = serialize('geojson', Property.objects.filter(med_coord__distance_lte=(pnt, D(m=200)))) #the raidious given should be the same as in propertyOwner_datasets.
         return HttpResponse(thePoints, content_type='json')
-    
-#    else:
-#        print("i else")
-#        punkter = serialize('geojson', Property.objects.filter(pk__lte=30)) #gte = greater/equal than, lte = less/equal than
-#        return HttpResponse(punkter, content_type='json')
 
 def propertyOwner_datasets(request):
-    #punkter = serialize('geojson', Property.objects.all())
+    print("i owners view")
+   # if (request.method == 'POST'):
+    centerLat = float(request.POST.get('centerLat'))
+    centerLng = float(request.POST.get('centerLng'))
+    
+    point = Point(centerLng, centerLat)
+    pnt = GEOSGeometry(point, srid=4326)
+    print(pnt)
 
-    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
-
-    return HttpResponse(punkter, content_type='json')
+    thePropertiesInRange =Property.objects.filter(med_coord__distance_lte=(pnt, D(m=200))) #the raidious given should be the same as in property_datasets.
+    propertiesID = []
+    for aProperty in thePropertiesInRange:
+        ownersPk=aProperty.pk
+        propertiesID.append(ownersPk)
+        #owners.append(PropertyOwner.objects.filter(pk__exact=ownersPk)) #16112 
+    
+    ownersGEOJson = serialize('geojson', PropertyOwner.objects.filter(pk__in=propertiesID)) 
+    return HttpResponse(ownersGEOJson, content_type='json')
 
 def leaseHolder_datasets(request):
     #punkter = serialize('geojson', Property.objects.all())
@@ -65,6 +70,19 @@ def propertyBoarder_datasets(request):
     #punkter = serialize('geojson', PropertyBoarder.objects.all())
     punkter = serialize('geojson', PropertyBoarder.objects.filter(pk__gte=50000))
     return HttpResponse(punkter, content_type='json')
+
+
+def makePointFromCoord():
+    return null
+
+
+
+###########SPARAD KOD##########
+
+
+#    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
+#    #punkter = serialize('geojson', Property.objects.all())
+#    return HttpResponse(punkter, content_type='json')
 
 def googleKarta(request):
     print('views.py 1')
