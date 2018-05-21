@@ -202,7 +202,7 @@
 
             createSearchBoxCities(map);
             updateOwnersObject();
-            createLeaseHoldersObject();
+            updateLeaseHoldersObject();
 
 
             hasMapBoundsChanged(map);
@@ -235,7 +235,6 @@
                 leaseHolderID: leaseHolderID,
                 showInfo: false,
                 id: i,
-                draggable: true,
                 dbInfo: propertyFeatures.properties // propertyGEOJSON.features[i].properties,
             });
             //console.log(latLng.toString());
@@ -253,6 +252,7 @@
             //map.addListener('center_changed', function() {
             map.addListener('click', function() {
                 updateOwnersObject();
+                updateLeaseHoldersObject();
                 changeMarkers(map);
             });
             
@@ -288,8 +288,6 @@
         }
 
         function deleteMarkers(map) {
-            console.log(propertyMarkers);
-            console.log("deleteMarkers");
             if (!Array.isArray(propertyMarkers) || !propertyMarkers.length) {
                 console.log("There are no markers in the markers-array.");
             } else {
@@ -299,6 +297,7 @@
                 propertyMarkers.forEach(function(marker) {
                     marker.setMap(null);
                     // marker.visible = false;
+                    //INGRID: Du borde ta bort markerns listener också.
                 });
                 propertyMarkers = [];
 
@@ -319,13 +318,13 @@
                     centerLng: coords[1],
                 },
                 success: function(result) {
-                    console.log('has successsfully mada an ajaxcall. addMarkers');
                     propertyGEOJSON = result;
                     var markers = [];
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
                         //   markers.push(createMarker(i, map));
                         propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
                     }
+                    console.log(propertyGEOJSON);
                     //                    console.log("skapat markers från mittenkoord: " + coords);
                     //                    console.log(propertyMarkers);
                     //                    console.log("addMarkers före ");
@@ -347,18 +346,27 @@
                     centerLng: coords[1],
                 },
                 success: function(result) {
-                    console.log('has successsfully mada an ajaxcall. updateOwnersObject');
                     ownerObj = result;
                     console.log(ownerObj);
+                    console.log("ownerObj ^");
                 }
             });
         }
 
-        function createLeaseHoldersObject() {
+        function updateLeaseHoldersObject() {
+            var coords = getScreenCoords(map);
             $.ajax({
                 url: leaseHoldersURL,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                    centerLat: coords[0],
+                    centerLng: coords[1],
+                },
                 success: function(result) {
                     leaseHolderObj = result;
+                    console.log(leaseHolderObj);
+                    console.log("leaseholderObj ^");
                 }
             });
         }
@@ -422,6 +430,7 @@
 
         function findLeaseHolders(theProperty) {
             console.log(theProperty.leaseHolderID);
+            console.log("theProperty.leaseHolderID ^");
             var i;
             for (i = 0; i < leaseHolderObj.features.length; i++) {
                 if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one. 
@@ -436,7 +445,6 @@
             writePropertyAndOwner(ownerFeatures, theProperty);
 
             if (leaseHolderFeatures == "NoMatch") {
-                console.log("Tomten har ingen tomträttsinnehavare");
                 document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML + "<br><h6> Vald tomt har ingen tomträtt";
             } else {
                 writeLeaseHolder(leaseHolderFeatures);
@@ -470,14 +478,10 @@
             console.log("Denna tomt har lös köpeskilling: " + theProperty.dbInfo.price_lo);
 
             textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
-            console.log("H" + firstName + "H");
-            console.log(typeof firstName);
             if (firstName === '' && surName === '') {
-                console.log("=== funkade");
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b> " + companyName +
                     "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
-                console.log(textTillInfobox);
             } else if (companyName === '') {
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b>      " + firstName + " " + surName;
