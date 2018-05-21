@@ -117,6 +117,9 @@
         var ownerObj;
         var leaseHolderObj;
         var propertyGEOJSON;
+        var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+        var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
+        var isListenerFunctionDone = true;
         var blueIcon = {
             path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
             fillColor: 'blue',
@@ -133,8 +136,7 @@
             strokeColor: 'white',
             strokeWeight: 3
         };
-        var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
-        var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
+
 
 
         function initMapAndLayers() {
@@ -182,19 +184,9 @@
             })
             previousClickedMarker.setVisible(false);
 
-            //            $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
-            //                propertyGEOJSON = data;
-            //                for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
-            //                    createMarker(i, map);
-            //                }
-            //            });
-
-
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
             map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-            map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
             map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
                 return {
@@ -204,7 +196,6 @@
                     icon: feature.getProperty(blueIcon), //behövs ingen icon här? Ingrid
                 }
             });
-
 
             createSearchBoxCities(map);
             updateOwnersObject();
@@ -219,18 +210,13 @@
         //************* FUNCTIONS UNDER HERE *****************
 
         function createMarker(i, map, propertyFeatures) {
-            //            lat = propertyGEOJSON.features[i].geometry.coordinates[0];
-            //            lng = propertyGEOJSON.features[i].geometry.coordinates[1];
-            //            ownerID = propertyGEOJSON.features[i].properties.owners;
-            //            leaseHolderID = propertyGEOJSON.features[i].properties.leaseholders;
 
             lat = propertyFeatures.geometry.coordinates[0];
             lng = propertyFeatures.geometry.coordinates[1];
             ownerID = propertyFeatures.properties.owners;
             leaseHolderID = propertyFeatures.properties.leaseholders;
 
-            var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
-                latLng = new google.maps.LatLng(lng, lat);
+            var latLng = new google.maps.LatLng(lng, lat);
 
             // Creating a marker and putting it on the map
             var propertyMarker = new google.maps.Marker({
@@ -253,11 +239,22 @@
 
         function createMarkerTrigger(map) {
             map.addListener('dragend', function() {
-                changeMarkers(map);
+                console.log("Dragged: " + isListenerFunctionDone);
+                if (isListenerFunctionDone) {
+                    isListenerFunctionDone = false;
+                    changeMarkers(map);
+                    isListenerFunctionDone = true;
+                }
+
             });
 
             map.addListener('zoom_changed', function() {
-                changeMarkers(map);
+                console.log("ZOOM: " + isListenerFunctionDone);
+                if (isListenerFunctionDone) {
+                    isListenerFunctionDone = false;
+                    changeMarkers(map);
+                    isListenerFunctionDone = true;
+                }
             });
         }
 
@@ -279,7 +276,6 @@
         }
 
         function getScreenCoords(map) {
-            //var bounds = map.getBounds();
             var centerLat = map.getCenter().lat();
             var centerLng = map.getCenter().lng();
             return [centerLat, centerLng];
@@ -287,7 +283,7 @@
 
         function deleteMarkers(map) {
             if (!Array.isArray(propertyMarkers) || !propertyMarkers.length) {
-                console.log("There are no markers in the markers-array.");
+                //console.log("There are no markers in the markers-array.");
             } else {
                 // Clear out the old markers.
                 propertyMarkers.forEach(function(marker) {
@@ -295,7 +291,7 @@
                     // marker.visible = false;
                     //INGRID: Du borde ta bort markerns listener också.
                 });
-                //   propertyMarkers = [];
+                propertyMarkers = [];
 
             }
             return true
@@ -313,10 +309,8 @@
                 },
                 success: function(result) {
                     propertyGEOJSON = result;
-                    var markers = [];
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
-                        //   markers.push(createMarker(i, map));
-                        propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
+                        propertyMarkers.push(createMarker(i, map, propertyGEOJSON.features[i]));
                     }
                 }
             });
@@ -369,7 +363,6 @@
                 searchBox.setBounds(map.getBounds());
             });
 
-            var markers = [];
             // Listen for the event fired when the user selects a prediction and retrieve
             // more details for that place.
             searchBox.addListener('places_changed', function() {
@@ -378,12 +371,6 @@
                 if (places.length == 0) {
                     return;
                 }
-
-                // Clear out the old markers.
-                markers.forEach(function(marker) {
-                    marker.setMap(null);
-                });
-                markers = [];
 
                 // For each place, get the icon, name and location.
                 var bounds = new google.maps.LatLngBounds();
@@ -403,7 +390,6 @@
                 map.fitBounds(bounds);
             });
         }
-
 
         function findAndPrintOwners(theProperty) {
             var i;
