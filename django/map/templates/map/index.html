@@ -64,7 +64,7 @@
             margin-top: -409pt;
             text-align: center;
             padding: 10pt;
-            
+
         }
 
         #citySearch {
@@ -85,13 +85,13 @@
 
     <div id="intro-text">
         <h3>Toolgate Maps </h3>
-        
+
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
 
-    <div id="map" ></div>
+    <div id="map"></div>
     <div id="info-box-static">
-    <h4>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h4>
+        <h4>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h4>
     </div>
     <div id="info-box"></div>
     <!-- <div id="info-box-tomtratt"></div> -->
@@ -105,7 +105,7 @@
         <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
         <a href="{% url 'signup' %}" class="btn btn-primary">Skapa konto</a>
         <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
-       
+
 
     </div>
     {% endif %}
@@ -253,11 +253,11 @@
 
         function createMarkerTrigger(map) {
             map.addListener('dragend', function() {
-                    changeMarkers(map);
+                changeMarkers(map);
             });
 
             map.addListener('zoom_changed', function() {
-                    changeMarkers(map);
+                changeMarkers(map);
             });
         }
 
@@ -269,8 +269,7 @@
                 if (deleteMarkers(map)) {
                     addMarkers(map);
                 }
-            }
-            else {
+            } else {
                 // ADDA en infobox här. som säger varför prickar inte syns. 
                 deleteMarkers(map);
             }
@@ -295,7 +294,7 @@
                     // marker.visible = false;
                     //INGRID: Du borde ta bort markerns listener också.
                 });
-             //   propertyMarkers = [];
+                //   propertyMarkers = [];
 
             }
             console.log(propertyMarkers);
@@ -447,12 +446,12 @@
             }
 
             document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-                "<h6><i> *Saknad information finns ej tillgänglig hos lantmäteriet";
+                "<h6><i> Data i tomma fält finns ej tillgänglig hos lantmäteriet";
 
         }
 
         function writePropertyAndOwner(ownerFeatures, theProperty) {
-            var textTillInfobox = "Infoboxtext ska sparas i denna variabel";
+            var textTillInfobox = "Infoboxtext are saved in this variable";
 
             //Variables about the first owner
             firstName = ownerFeatures.properties["firstname"];
@@ -463,7 +462,7 @@
             //Variables about the property
             area = theProperty.dbInfo.area / 10; //it's givven in tenth of sqare meters.
             municipality = theProperty.dbInfo.municipality;
-            fast_bet = theProperty.dbInfo.district + " " + theProperty.dbInfo.unity + theProperty.dbInfo.sign + theProperty.dbInfo.block;
+            fast_bet = theProperty.dbInfo.district + " " + theProperty.dbInfo.block + theProperty.dbInfo.sign + theProperty.dbInfo.unity;
             price_fa = theProperty.dbInfo.price_fa + " " + theProperty.dbInfo.currency_fa;
             price_lo = theProperty.dbInfo.price_lo + " " + theProperty.dbInfo.currency_lo;
             price_date = theProperty.dbInfo.price_date;
@@ -473,7 +472,8 @@
 
             console.log("Denna tomt har lös köpeskilling: " + theProperty.dbInfo.price_lo);
 
-            textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
+            //   textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
+            textTillInfobox = "<h4><b>" + fast_bet + "</b>";
             if (firstName === '' && surName === '') {
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b> " + companyName +
@@ -496,7 +496,7 @@
 
             if (theProperty.dbInfo.price_lo != '') {
                 textTillInfobox = textTillInfobox +
-                "<h5><b> Lös Köpeskilling:</b> " + price_lo;
+                    "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
 
             textTillInfobox = textTillInfobox +
@@ -507,22 +507,47 @@
 
 
         function writeLeaseHolder(leaseHolderFeatures) {
+            var textTillInfobox = "Infoboxtext are saved in this variable";
 
             //Variables about the first lease holder
             firstName = leaseHolderFeatures.properties["firstname"];
             surName = leaseHolderFeatures.properties["surname"];
             companyName = leaseHolderFeatures.properties["coname"];
-            price_fa = leaseHolderFeatures.properties["price_fa"] + " " + leaseHolderFeatures.properties["currency_fa"] + " ENHET";
-            price_lo = leaseHolderFeatures.properties["price_lo"] + " " + leaseHolderFeatures.properties["currency_lo"] + " ENHET";
+            price_fa = leaseHolderFeatures.properties["price_fa"] + " " + leaseHolderFeatures.properties["currency_fa"];
+            price_lo = leaseHolderFeatures.properties["price_lo"] + " " + leaseHolderFeatures.properties["currency_lo"];
             price_date = leaseHolderFeatures.properties["price_date"];
 
+//            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+//                "<br><h4><b>Tomträttsinnehavare</b>" +
+//                "<h5><b> Namn:</b> " + firstName + " " + surName +
+//                "<h5><b> Ägare:</b> " + companyName +
+//                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
+//                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
+//                "<h5><b> Köpdatum:</b> " + price_date + " ";
+
+            textTillInfobox = "<br><h4><b>Tomträttsinnehavare</b>";
+            
+            if (firstName === '' && surName === '') {
+                textTillInfobox = textTillInfobox +
+                    "<h5><b> Tomträttsinnehavare:</b> " + companyName;
+            } else if (companyName === '') {
+                textTillInfobox = textTillInfobox +
+                    "<h5><b> Tomträttsinnehavare:</b>" + firstName + " " + surName;
+            }
+
+            textTillInfobox = textTillInfobox +
+                "<h5><b> Fast Köpeskilling:</b> " + price_fa;
+
+            if (leaseHolderFeatures.properties["price_lo"] != '') {
+                textTillInfobox = textTillInfobox +
+                    "<h5><b> Lös Köpeskilling:</b> " + price_lo;
+            }
+            
+            textTillInfobox = textTillInfobox +
+                "<h5><b> Köpdatum:</b> " + price_date;
+
             document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-                "<br><h4><b>Tomträttsinnehavare</b>" +
-                "<h5><b> Namn:</b> " + firstName + " " + surName +
-                "<h5><b> Ägare:</b> " + companyName +
-                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
-                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
-                "<h5><b> Köpdatum:</b> " + price_date + " ";
+                textTillInfobox;
         }
 
         function clickedProperty(theMarker) {
