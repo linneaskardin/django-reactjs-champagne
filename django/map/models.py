@@ -28,11 +28,10 @@ class Waypoint(models.Model):
 # INFO FROM LANTMÄTERIET
 class PropertyOwner(models.Model):
     reg_no = models.CharField('Organisationsnummer', null=True, max_length=13)
-    coname = models.CharField('Firmanamn', max_length=300, default = None, null = True)
-    jurform = models.CharField('Juridisk form', max_length=2, default = None, null = True)
+    coname = models.CharField('Firmanamn', max_length=300, default = '', null = True)
     # Info regaring individuals. Might be omitted later /CE
-    firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
-    surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
+    firstname = models.CharField('Förnamn', max_length=80, default = '', null = True)
+    surname = models.CharField('Efternamn', max_length=100, default = '', null = True)
 
     class Meta:
         ordering = ('coname', 'surname',) # Order by coname. Makes blank conames come first so it's not optimal /CE
@@ -40,11 +39,15 @@ class PropertyOwner(models.Model):
         return (self.coname)
 
 class LeaseHolder(models.Model): # Tomträttsinnehavare
-    coname = models.CharField('Firmanamn', max_length=300, default = None, null = True)
-    jurform = models.CharField('Juridisk form', max_length=2, default = None, null = True)
+    coname = models.CharField('Firmanamn', max_length=300, default = '', null = True)
     # Info regaring individuals. Might be omitted later /CE
-    firstname = models.CharField('Förnamn', max_length=80, default = None, null = True)
-    surname = models.CharField('Efternamn', max_length=100, default = None, null = True)
+    firstname = models.CharField('Förnamn', max_length=80, default = '', null = True)
+    surname = models.CharField('Efternamn', max_length=100, default = '', null = True)
+    price_fa = models.CharField('Köpeskilling fast egendom',max_length=36,default = '', null=True) # Comes as a string when missing
+    currency_fa = models.CharField('Valuta fast egendom',max_length=5, default = '', null=True)
+    price_lo = models.CharField('Köpeskilling lös egendom',max_length=36, default = '', null=True) # Comes as a string when missing
+    currency_lo = models.CharField('Valuta lös egendom',max_length=5, default = '', null=True)
+    price_date = models.CharField('Försäljningsdatum',max_length=8,null=True,default='')
 
 class Property(models.Model):
     med_coord = models.PointField('Mediankoordinat',geography=True, srid=4326,blank=True, null=True)
@@ -61,6 +64,9 @@ class Property(models.Model):
     price_lo = models.CharField('Köpeskilling lös egendom',max_length=36, default = '', null=True) # Comes as a string when missing
     currency_lo = models.CharField('Valuta lös egendom',max_length=5, default = '', null=True)
     price_date = models.CharField('Försäljningsdatum',max_length=8,null=True,default='')
+    taxation_year = models.CharField('Taxeringsår', max_length=4,null=True,default='')
+    taxation_land = models.CharField('Taxeringsvärde på mark', max_length=7,null=True,default='')
+    taxation_build = models.CharField('Taxeringsvärde på byggnad(er)',max_length=9,null=True,default='')
     coord_e = models.DecimalField('Koord E', max_digits = 30, decimal_places=3, null = True, default = 0)
     coord_n = models.DecimalField('Koord N', max_digits = 30, decimal_places=3, null = True, default = 0)
 
