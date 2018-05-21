@@ -31,6 +31,10 @@
             padding: 0;
         }
 
+        h6 {
+          color: gray;
+        }
+
         #intro-text {
             margin-left: 3%;
             line-height: 10px;
@@ -440,13 +444,13 @@
             writePropertyAndOwner(ownerFeatures, theProperty);
 
             if (leaseHolderFeatures == "NoMatch") {
-                document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML + "<br><h4><b>Tomträttsinnehavare</b> "+"<br><h6> Vald fastighet har ingen tomträtt<br>";
+                document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML + "<br><h4><b>Tomträttsinnehavare</b> "+"<br><h5> Vald fastighet har ingen tomträtt<br>";
             } else {
                 writeLeaseHolder(leaseHolderFeatures);
             }
 
             document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-                "<h6><i><br> Data i tomma fält finns ej tillgänglig hos lantmäteriet";
+                "<h6><i><br> Data i tomma fält finns ej tillgänglig hos Lantmäteriet";
 
         }
 
@@ -529,10 +533,10 @@
 
             if (firstName === '' && surName === '') {
                 textTillInfobox = textTillInfobox +
-                    "<br><h5><b> Tomträttsinnehavare:</b> " + companyName;
+                    "<br><h5><b> Tomträttsinnehavare: </b>" + companyName;
             } else if (companyName === '') {
                 textTillInfobox = textTillInfobox +
-                    "<br><h5><b> Tomträttsinnehavare:</b>" + firstName + " " + surName;
+                    "<br><h5><b> Tomträttsinnehavare: </b>" + firstName + " " + surName;
             }
 
             textTillInfobox = textTillInfobox +
