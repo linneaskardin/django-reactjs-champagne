@@ -46,7 +46,7 @@ class Command(BaseCommand):
             dictLease={}
             for row in readert:
                 if row[20] is not None: # It might be None
-                    dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25], 'coname_l':row[27]}
+                    dictLease[row[20]] = {'firstname_l':row[23], 'surname_l':row[25], 'coname_l':row[27],'irfast_uuid':row[17]}
         # Import data for Taxation value and place in dictionary
         with open('data/TAXENH_40A.txt','r', encoding='iso-8859-1',newline='') as csvar:
             readerta = csv.reader(csvar, delimiter=';')
@@ -60,19 +60,36 @@ class Command(BaseCommand):
             dictFas={}
             for row in readerf:
                 if row[5] is not None: # It might be None
-                    dictFas[row[5]] = {'fnr':row[7]}
+                    dictFas[row[5]] = {'fnr':row[7],'irfast_uuid':row[6],'kopesk_uuid':row[5]}
         with open('data/KOPESK_35P.txt','r', encoding='iso-8859-1',newline='') as csvkop:
             readerk = csv.reader(csvkop, delimiter=';')
-            dictKop={}
+            dictKopProp={}
+            dictKopLease={}
             for row in readerk:
-                # Since the data is sorted on date and serial number in the .txt-file, the latest sale will overwrite earlier sales
-                dictKop[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16],'price_date':row[1][:8]} # Don't include serial number
-        # Merge dictKop and dictFas
+                if row[3] in dictFas:
+                    u = dictFas.get(row[3],{'irfast_uuid':'NA'})['irfast_uuid']
+                    for key,value in dictLease.items():
+                        v = dictLease.get(key,{'irfast_uuid':'NA'})['irfast_uuid']
+                        if u == v:
+                            dictKopLease[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16],'price_date':row[1][:8]} # Don't include serial number
+                        elif u is 'NA':
+                            pass
+                        elif v is 'NA':
+                            pass
+                        else:
+                            dictKopProp[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16],'price_date':row[1][:8]}
+        # Merge dictKopProp and dictFas
         d = {}
-        for key,value in dictKop.items():
+        for key,value in dictKopProp.items():
             if key in dictFas:
-                value = {**dictKop[key], **dictFas[key]}
+                value = {**dictKopProp[key], **dictFas[key]}
                 d[key] = value
+        # Merge dictKopProp and dictFas
+        e = {}
+        for key,value in dictKopLease.items():
+            if key in dictFas:
+                value = {**dictKopProp[key], **dictFas[key]}
+                e[key] = value
         # Create dictPrice and dictPriceLease with fnr as a key
         dictPrice = {}
         dictPriceLease = {}
@@ -82,9 +99,9 @@ class Command(BaseCommand):
             'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
             'price_lo':d.get(key,{'price_lo':'NA'})['price_lo'],'price_date':d.get(key,{'price_date':'NA'})['price_date']}
 
-            dictPriceLease[d.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':d.get(key,{'currency_fa':'NA'})['currency_fa'],
-            'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
-            'price_lo':d.get(key,{'price_lo':'NA'})['price_lo'],'price_date':d.get(key,{'price_date':'NA'})['price_date']}
+            dictPriceLease[e.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':e.get(key,{'currency_fa':'NA'})['currency_fa'],
+            'price_fa':e.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':e.get(key,{'currency_lo':'NA'})['currency_lo'],
+            'price_lo':e.get(key,{'price_lo':'NA'})['price_lo'],'price_date':e.get(key,{'price_date':'NA'})['price_date']}
 
         # Merge all dictionaries according to what fields exists for the specific fnr
         z = {}
