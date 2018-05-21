@@ -262,17 +262,20 @@
         }
 
         function changeMarkers(map) {
-            console.log(map.getZoom());
             if (map.getZoom() >= 17) {
                 updateOwnersObject();
                 updateLeaseHoldersObject();
                 if (deleteMarkers(map)) {
+                    console.log("Det är deletat");
                     addMarkers(map);
                 }
             } else {
                 // ADDA en infobox här. som säger varför prickar inte syns. 
                 deleteMarkers(map);
+                unclickMarker(previousClickedMarker);
             }
+            console.log(propertyMarkers);
+            console.log("propertyMarkers ^");
         }
 
         function getScreenCoords(map) {
@@ -286,8 +289,6 @@
             if (!Array.isArray(propertyMarkers) || !propertyMarkers.length) {
                 console.log("There are no markers in the markers-array.");
             } else {
-                console.log('katten');
-
                 // Clear out the old markers.
                 propertyMarkers.forEach(function(marker) {
                     marker.setMap(null);
@@ -297,8 +298,6 @@
                 //   propertyMarkers = [];
 
             }
-            console.log(propertyMarkers);
-            console.log("deletat markers");
             return true
         }
 
@@ -319,14 +318,8 @@
                         //   markers.push(createMarker(i, map));
                         propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
                     }
-                    console.log(propertyGEOJSON);
-                    //                    console.log("skapat markers från mittenkoord: " + coords);
-                    //                    console.log(propertyMarkers);
-                    //                    console.log("addMarkers före ");
                 }
             });
-
-            updateOwnersObject();
         }
 
         function updateOwnersObject() {
@@ -429,7 +422,6 @@
             var i;
             for (i = 0; i < leaseHolderObj.features.length; i++) {
                 if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one.
-                    console.log("Det finns en tomträttsinnehavare");
                     return (leaseHolderObj.features[i]);
                 }
             }
@@ -470,7 +462,7 @@
             taxation_land = theProperty.dbInfo.taxation_land * 1000;
             taxation_build = theProperty.dbInfo.taxation_build * 1000;
 
-            console.log("Denna tomt har lös köpeskilling: " + theProperty.dbInfo.price_lo);
+            console.log("Denna tomt har denna lös köpeskilling: " + theProperty.dbInfo.price_lo);
 
             //   textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
             textTillInfobox = "<h4><b>" + fast_bet + "</b>";
@@ -517,16 +509,16 @@
             price_lo = leaseHolderFeatures.properties["price_lo"] + " " + leaseHolderFeatures.properties["currency_lo"];
             price_date = leaseHolderFeatures.properties["price_date"];
 
-//            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-//                "<br><h4><b>Tomträttsinnehavare</b>" +
-//                "<h5><b> Namn:</b> " + firstName + " " + surName +
-//                "<h5><b> Ägare:</b> " + companyName +
-//                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
-//                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
-//                "<h5><b> Köpdatum:</b> " + price_date + " ";
+            //            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+            //                "<br><h4><b>Tomträttsinnehavare</b>" +
+            //                "<h5><b> Namn:</b> " + firstName + " " + surName +
+            //                "<h5><b> Ägare:</b> " + companyName +
+            //                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
+            //                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
+            //                "<h5><b> Köpdatum:</b> " + price_date + " ";
 
             textTillInfobox = "<br><h4><b>Tomträttsinnehavare</b>";
-            
+
             if (firstName === '' && surName === '') {
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Tomträttsinnehavare:</b> " + companyName;
@@ -542,7 +534,7 @@
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
-            
+
             textTillInfobox = textTillInfobox +
                 "<h5><b> Köpdatum:</b> " + price_date;
 
