@@ -26,7 +26,7 @@
 
         html,
         body {
-            height: 80%;
+            height: 85%;
             margin: 0;
             padding: 0;
         }
@@ -49,20 +49,22 @@
             height: auto;
             width: 20%;
             background-color: white;
-            text-indent: 15px;
             float: right;
             margin-right: 3%;
-            margin-top: -363pt;
+            margin-top: -409pt;
+            padding: 10pt;
         }
 
-        #info-box-tomtratt {
-            height: auto;
+        #info-box-static {
+            height: 170pt;
             width: 20%;
             background-color: white;
-            text-indent: 15px;
             float: right;
             margin-right: 3%;
-            margin-bottom: 10pt;
+            margin-top: -409pt;
+            text-align: center;
+            padding: 10pt;
+            
         }
 
         #citySearch {
@@ -83,13 +85,16 @@
 
     <div id="intro-text">
         <h3>Toolgate Maps </h3>
-        <p>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</p>
+        
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
 
-    <div id="map"></div>
+    <div id="map" ></div>
+    <div id="info-box-static">
+    <h4>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h4>
+    </div>
     <div id="info-box"></div>
-    <div id="info-box-tomtratt"></div>
+    <!-- <div id="info-box-tomtratt"></div> -->
     {% else %}
 
     <div id="MenuApp"></div>
@@ -98,8 +103,9 @@
     <div class="jumbotron text-center">
         <h1>Du är inte inloggad!</h1>
         <p>För att använda Toolgate Maps vänligen logga in eller skapa ett nytt konto</p>
-        <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
         <a href="{% url 'signup' %}" class="btn btn-primary">Skapa konto</a>
+        <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
+       
 
     </div>
     {% endif %}
@@ -161,11 +167,11 @@
                     });
                     map.setCenter(pos);
                 }, function() {
-                    handleLocationError(true, locationMarker, map.getCenter());
+                    handleLocationError(true, map.getCenter());
                 });
             } else {
                 // Browser doesn't support Geolocation
-                handleLocationError(false, locationMarker, map.getCenter());
+                handleLocationError(false, map.getCenter());
             }
 
             previousClickedMarker = new google.maps.Marker({ //Sets values so it's not null.
@@ -410,7 +416,7 @@
         function findAndPrintOwners(theProperty) {
             var i;
             for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them. 
+                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
                     var leaseHolderFeatures = findLeaseHolders(theProperty);
                     writeToInfobox(ownerObj.features[i], leaseHolderFeatures, theProperty);
                     break;
@@ -423,7 +429,7 @@
             console.log("theProperty.leaseHolderID ^");
             var i;
             for (i = 0; i < leaseHolderObj.features.length; i++) {
-                if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one. 
+                if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one.
                     console.log("Det finns en tomträttsinnehavare");
                     return (leaseHolderObj.features[i]);
                 }
@@ -441,7 +447,7 @@
             }
 
             document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-                "<br><h6> Saknad information finns ej tillgänglig hos lantmäteriet";
+                "<h6><i> *Saknad information finns ej tillgänglig hos lantmäteriet";
 
         }
 
@@ -473,6 +479,7 @@
                     "<h5><b> Ägare:</b> " + companyName +
                     "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
             } else if (companyName === '') {
+
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b>      " + firstName + " " + surName;
             }
@@ -484,14 +491,12 @@
                 "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
                 "<h5><b> Taxeringsår:</b> " + taxation_year;
 
-
-
             textTillInfobox = textTillInfobox +
                 "<h5><b> Fast Köpeskilling:</b> " + price_fa;
 
             if (theProperty.dbInfo.price_lo != '') {
                 textTillInfobox = textTillInfobox +
-                    "<h5><b> Lös Köpeskilling:</b> " + price_lo;
+                "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
 
             textTillInfobox = textTillInfobox +
@@ -541,8 +546,9 @@
             document.getElementById('info-box').innerHTML = "";
         }
 
-        function handleLocationError(browserHasGeolocation, locationMarker, pos) {
+        function handleLocationError(browserHasGeolocation, pos) {
 
+            alert("Din webläsare stödjer inte platsfunktion. Det kan bero på dina inställningar. Stäng för att fortsätta till kartan.");
             // Put LocationError handlers //CE
         }
 

@@ -17,9 +17,8 @@
     <p>Välkommen till Toolgate Maps! Hoppas du hittar vad du söker!</p>
     <a href="{% url 'logout' %}"><p>Logga ut</p></a>
   </div>
-
-
-
+  <img src="http://www.nattpokalen.se/wp-content/uploads/2018/02/Toolgate-logo-svart-300x162.png" alt="..." class="img-responsive center-block" />
+ 
 {% else %}
 
 <!-- This will appear if you have NOT signed in -->
@@ -28,8 +27,9 @@
 {% render_bundle 'MenuApp' %}
 <div class="jumbotron text-center" style="background-color: #f2f2f2">
     <h1> Välkommen till Toolgate Maps! </h1>
-    <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
     <a href="{% url 'signup' %}" class="btn btn-primary">Skapa konto</a>
+    <a href="{% url 'login' %}" class="btn btn-primary">Logga in</a>
+
 </div>
 <div class="container" style="background-color:  #f2f2f2">
  <div class="row">
