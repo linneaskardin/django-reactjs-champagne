@@ -139,11 +139,11 @@
 
         function initMapAndLayers() {
             map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 17,
+                zoom: 9,
                 center: {
-                    // Location where there is a Property now. Default when geolocation doesn't work //CE
-                    lat: 61.335,
-                    lng: 16.38
+                    // Default location is Stockholm County when geolocation doesn't work
+                    lat: 59.334591,
+                    lng: 18.063240
                 }
             });
             // Try HTML5 geolocation.
@@ -270,7 +270,7 @@
                     addMarkers(map);
                 }
             } else {
-                // ADDA en infobox här. som säger varför prickar inte syns. 
+                // ADDA en infobox här. som säger varför prickar inte syns.
                 deleteMarkers(map);
             }
         }
@@ -526,7 +526,7 @@
 //                "<h5><b> Köpdatum:</b> " + price_date + " ";
 
             textTillInfobox = "<br><h4><b>Tomträttsinnehavare</b>";
-            
+
             if (firstName === '' && surName === '') {
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Tomträttsinnehavare:</b> " + companyName;
@@ -542,7 +542,7 @@
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
-            
+
             textTillInfobox = textTillInfobox +
                 "<h5><b> Köpdatum:</b> " + price_date;
 
@@ -573,7 +573,7 @@
 
         function handleLocationError(browserHasGeolocation, pos) {
 
-            alert("Din webläsare stödjer inte platsfunktion. Det kan bero på dina inställningar. Stäng för att fortsätta till kartan.");
+            alert("Det går inte att visa din plats på kartan. Det kan bero på dina inställningar i webläsaren.");
             // Put LocationError handlers //CE
         }
 
