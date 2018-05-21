@@ -203,9 +203,9 @@
             createSearchBoxCities(map);
             updateOwnersObject();
             updateLeaseHoldersObject();
+            changeMarkers(map);
 
-
-            hasMapBoundsChanged(map);
+            createMarkerTrigger(map);
         }
 
 
@@ -245,38 +245,28 @@
             return propertyMarker;
         }
 
-        function hasMapBoundsChanged(map) {
-            var mouseIsReleased = false;
-            var mapCenterChanged = false;
-
-            //map.addListener('center_changed', function() {
-            map.addListener('click', function() {
-                updateOwnersObject();
-                updateLeaseHoldersObject();
-                changeMarkers(map);
+        function createMarkerTrigger(map) {
+            map.addListener('dragend', function() {
+                    changeMarkers(map);
             });
-            
-            /* map.onmouseup = function(){
 
-                            document.getElementById('map').onmousedown = function() {
-
-                       console.log("center changed");
-                       mouseIsReleased = mouseStatus(map);
-                       if (mouseIsReleased) {
-                           alert("change markers");                         
-                           mouseIsReleased = false;
-                           mapCenterChanged = false;
-                       }
-                      map.addListener("mouseup", mouseupFunction, {
-                    once: true
-                });
-                // map.removeListener("mouseup", mouseupFunction);  */
+            map.addListener('zoom_changed', function() {
+                    changeMarkers(map);
+            });
         }
 
-
         function changeMarkers(map) {
-            if (deleteMarkers(map)) {
-                addMarkers(map);
+            console.log(map.getZoom());
+            if (map.getZoom() >= 17) {
+                updateOwnersObject();
+                updateLeaseHoldersObject();
+                if (deleteMarkers(map)) {
+                    addMarkers(map);
+                }
+            }
+            else {
+                // ADDA en infobox här. som säger varför prickar inte syns. 
+                deleteMarkers(map);
             }
         }
 
@@ -299,7 +289,7 @@
                     // marker.visible = false;
                     //INGRID: Du borde ta bort markerns listener också.
                 });
-                propertyMarkers = [];
+             //   propertyMarkers = [];
 
             }
             console.log(propertyMarkers);
