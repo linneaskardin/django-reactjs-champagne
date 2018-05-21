@@ -65,6 +65,7 @@ class Command(BaseCommand):
             readerk = csv.reader(csvkop, delimiter=';')
             dictKop={}
             for row in readerk:
+                # Since the data is sorted on date and serial number in the .txt-file, the latest sale will overwrite earlier sales
                 dictKop[row[3]] = {'currency_fa':row[9],'price_fa':row[10],'currency_lo':row[15],'price_lo':row[16],'price_date':row[1][:8]} # Don't include serial number
         # Merge dictKop and dictFas
         d = {}
@@ -75,7 +76,7 @@ class Command(BaseCommand):
         # Create dictPrice and dictPriceLease with fnr as a key
         dictPrice = {}
         dictPriceLease = {}
-        # Since the data is sorted on date and serial number in the .txt-file, the latest sale will be overwrite earlier sales
+
         for key,value in d.items():
             dictPrice[d.get(key,{'fnr':'NA'})['fnr']] = {'currency_fa':d.get(key,{'currency_fa':'NA'})['currency_fa'],
             'price_fa':d.get(key,{'price_fa':'NA'})['price_fa'],'currency_lo':d.get(key,{'currency_lo':'NA'})['currency_lo'],
