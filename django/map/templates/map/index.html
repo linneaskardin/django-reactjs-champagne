@@ -1,4 +1,8 @@
-{% extends "base.html" %} {% load render_bundle from webpack_loader %} {% load bootstrap4 %} {% block title %}Index{% endblock %} {% block main %} {% load static %} {% load leaflet_tags %}
+{% extends "base.html" %} 
+{% load render_bundle from webpack_loader %} 
+{% load bootstrap4 %} 
+{% block title %}Index{% endblock %} 
+{% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
 <html>
@@ -55,7 +59,7 @@
             padding: 10pt;
         }
         #info-box-static {
-            height: 170pt;
+            height: 200pt;
             width: 20%;
             background-color: white;
             float: right;
@@ -71,6 +75,14 @@
             margin-left: 3%;
 
         }
+        #info-box-text{
+            margin-top: 15%;
+        } 
+
+        #logga {
+            padding: 10%;
+
+        }
 
     </style>
 
@@ -84,13 +96,19 @@
 
     <div id="intro-text">
         <h3>Toolgate Maps </h3>
+        <h4>Klickbara ikoner visas endast då du zoomat in på kartan. </h4>
         
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
 
     <div id="map" ></div>
     <div id="info-box-static">
-    <h4>Klicka på kartan för att få fram fastighetsinformation om den önskade tomten.</h4>
+    <div id="info-box-text">
+    <h4>Klicka på ikonen på kartan för att få fram fastighets- information om den önskade tomten.</h4>
+</div>
+    <div id="logga">
+    <img src="http://www.nattpokalen.se/wp-content/uploads/2018/02/Toolgate-logo-svart-300x162.png"  style="width: 50%"><br>
+    </div>    
     </div>
     <div id="info-box"></div>
     {% else %}
