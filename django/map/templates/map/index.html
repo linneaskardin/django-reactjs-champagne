@@ -482,19 +482,49 @@
             if (firstName === '' && surName === '') {
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Ägare:</b> " + companyName +
-                    "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
+                    "<h5><b> Organisationsnummer:</b>     " + " " + reg_no
             } else if (companyName === '') {
 
                 textTillInfobox = textTillInfobox +
-                    "<h5><b> Ägare:</b>      " + firstName + " " + surName;
+                    "<h5><b> Ägare:</b>      " + firstName + " " + surName
+            }
+            if (area === 0) {
+
+                textTillInfobox = textTillInfobox +
+                "<h5><b> Area:</b> ";
+            }
+            else{
+              textTillInfobox = textTillInfobox +
+              "<h5><b> Area:</b> " + area + " kvm";
+            }
+
+            var taxeringsvarde = "Taxation value is saved in this variable";
+
+            if (taxation_build === 0 && taxation_land === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+
+            else if (taxation_land === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+            else if (taxation_build === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+            else{
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
             }
 
             textTillInfobox = textTillInfobox +
-                "<h5><b> Area:</b> " + area + " kvm" +
                 "<br><br><h4><b> Prisinformation</b> " +
-                "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
-                "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
-                "<h5><b> Taxeringsår:</b> " + taxation_year;
+                taxeringsvarde;
 
             textTillInfobox = textTillInfobox +
                 "<h5><b> Fast Köpeskilling:</b> " + price_fa;
