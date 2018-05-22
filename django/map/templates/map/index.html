@@ -216,7 +216,7 @@
             map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
                 return {
                     strokeWeight: 0.5,
-                    strokeColor: "#0000ff",
+                    strokeColor:"#697c9b",
                     clickable: false,
                     icon: feature.getProperty(blueIcon), //behövs ingen icon här? Ingrid
                 }
@@ -282,11 +282,11 @@
                     changeMarkers(map);
                     isListenerFunctionDone = true;
                 }
-                
+
                 if (map.getZoom() > 15) {
                     console.log("visa borders");
                     addPropertyBorders(map);
-                    
+
                 } else {
                     console.log("ta bort borders");
                     map.data.forEach(function(feature) {
@@ -298,6 +298,7 @@
         }
 
         function changeMarkers(map) {
+          document.getElementById('info-box').innerHTML = "";
             if (map.getZoom() >= 17) {
                 updateOwnersObject();
                 updateLeaseHoldersObject();

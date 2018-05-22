@@ -25,8 +25,8 @@ def property_datasets(request):
         point = Point(centerLng, centerLat)
         pnt = GEOSGeometry(point, srid=4326)
         print(pnt)
-        
-        propertyGEOJson = serialize('geojson', Property.objects.filter(med_coord__distance_lte=(pnt, D(m=280)))) #the raidious given should be the same as in propertyOwner_datasets.
+
+        propertyGEOJson = serialize('geojson', Property.objects.filter(med_coord__distance_lte=(pnt, D(m=170)))) #the raidious given should be the same as in propertyOwner_datasets.
         return HttpResponse(propertyGEOJson, content_type='json')
 
 def propertyOwner_datasets(request):
@@ -38,29 +38,29 @@ def propertyOwner_datasets(request):
     pnt = GEOSGeometry(point, srid=4326)
     print(pnt)
 
-    thePropertiesInRange =Property.objects.filter(med_coord__distance_lte=(pnt, D(m=280))) #the raidious given should be the same as in property_datasets.
+    thePropertiesInRange =Property.objects.filter(med_coord__distance_lte=(pnt, D(m=170))) #the raidious given should be the same as in property_datasets.
     ownersID = []
     for aProperty in thePropertiesInRange:
         theOwners = aProperty.owners.all()
         for owner in theOwners:
             ownersID.append(owner.pk)
-         
-    ownersGEOJson = serialize('geojson', PropertyOwner.objects.filter(pk__in=ownersID)) 
+
+    ownersGEOJson = serialize('geojson', PropertyOwner.objects.filter(pk__in=ownersID))
     return HttpResponse(ownersGEOJson, content_type='json')
 
 def leaseHolder_datasets(request):
-    
+
     centerLat = float(request.POST.get('centerLat'))
     centerLng = float(request.POST.get('centerLng'))
     point = Point(centerLng, centerLat)
     pnt = GEOSGeometry(point, srid=4326)
     print(pnt)
 
-    thePropertiesInRange =Property.objects.filter(med_coord__distance_lte=(pnt, D(m=280))) #the raidious given should be the same as in property_datasets.
+    thePropertiesInRange =Property.objects.filter(med_coord__distance_lte=(pnt, D(m=170))) #the raidious given should be the same as in property_datasets.
     leaseHoldersID = []
-    
+
     for aProperty in thePropertiesInRange:
-        
+
         theLeasers = aProperty.leaseholders.all()
         for leaser in theLeasers:
             leaseHoldersID.append(leaser.pk)
@@ -69,11 +69,11 @@ def leaseHolder_datasets(request):
     return HttpResponse(leasersGEOJson, content_type='json')
 
 def propertyBoarder_datasets(request):
-    
+
     centerLat = float(request.POST.get('centerLat'))
     centerLng = float(request.POST.get('centerLng'))
     point = Point(centerLng, centerLat)
-    
+
     punkter = serialize('geojson', PropertyBoarder.objects.all())
     #punkter = serialize('geojson', PropertyBoarder.objects.filter(pk__gte=50000))
     return HttpResponse(punkter, content_type='json')
