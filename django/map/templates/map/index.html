@@ -396,17 +396,17 @@
             var i;
             var matchedOwners = []
             console.log(theProperty.ownerID.length + " längden");
-            for (m = 0; i < theProperty.ownerID.length; i++) {
-                console.log(m);
-                console.log(theProperty.ownerID);
-                console.log("m + theProperty.ownerID");
+//            for (m = 0; i < theProperty.ownerID.length; i++) {
+//                console.log(m);
+//                console.log(theProperty.ownerID);
+//                console.log("m + theProperty.ownerID");
                 
                 for (i = 0; i < ownerObj.features.length; i++) {
-                    if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[m]) { //IM: checks for one of the owners even if there are more of them.
+                    if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
                         matchedOwners.push(ownerObj.features[i]);
                         break;
                     }
-                }
+                //}
             }
             console.log(matchedOwners);
             console.log("matchedOwners ^");

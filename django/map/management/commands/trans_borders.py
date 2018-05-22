@@ -12,7 +12,8 @@ class Command(BaseCommand):
         from shapely.geometry import multilinestring
 
         # Important that the shapefiles are copied into the project together as a zip-file
-        fp = 'django/data/al_get/al_get.shp' # Insert your own path
+        fp = '/Users/claraengman/django-reactjs-champagne/django/data/al_get/al_get.shp' # Insert your own path
+        #fp = 'django/data/al_get/al_get.shp' # Insert your own path
         borders_sweref = gpd.read_file(fp)
         borders_wgs84 = borders_sweref.to_crs({'init': 'epsg:4326'})
         df = pd.DataFrame(borders_wgs84)
