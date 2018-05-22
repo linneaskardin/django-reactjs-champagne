@@ -3,9 +3,21 @@
 {% load bootstrap4 %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Sign Up{% endblock %}
-
-
 {% block main %}
+ <head>  
+    {{ form.media }}
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+<style>
+          #info-text {
+      width: 75%;
+      text-align: left;
+      margin-left: 10%;
+  }      
+</style>
+  
+ </head>
+
+
 <div id="MenuApp"></div>
 {% render_bundle 'vendors' %}
 {% render_bundle 'MenuApp' %}
@@ -34,8 +46,9 @@
      </form>
    </div>
 
- <div class="col-sm-4" style="background-color: #f2f2f2">
-     <h3>Användarvillkor</h3>
+ <div class="col-sm-6" style="background-color: #f2f2f2">
+   <div id="info-text">
+    <h3>Användarvillkor</h3>
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
@@ -46,8 +59,9 @@
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.
- </div>
-</div>  
+        </div>
+        </div>  
+</div>
 </div>
 {% endblock %}
 
