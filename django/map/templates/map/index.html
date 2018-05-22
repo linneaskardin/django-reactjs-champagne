@@ -121,6 +121,9 @@
         var ownerObj;
         var leaseHolderObj;
         var propertyGEOJSON;
+        var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
+        var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
+        var isListenerFunctionDone = true;
         var blueIcon = {
             path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
             fillColor: 'blue',
@@ -137,8 +140,7 @@
             strokeColor: 'white',
             strokeWeight: 3
         };
-        var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
-        var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
+
 
 
         function initMapAndLayers() {
@@ -187,19 +189,7 @@
             })
             previousClickedMarker.setVisible(false);
 
-            //            $.getJSON('http://localhost:8000/toolgate_maps/properties_data/', function(data) {
-            //                propertyGEOJSON = data;
-            //                for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
-            //                    createMarker(i, map);
-            //                }
-            //            });
-
-
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
-
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-            map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-            // map.data.loadGeoJson('http://localhost:8000/toolgate_maps/properties_data/');
 
             map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
                 return {
@@ -209,7 +199,6 @@
                     icon: feature.getProperty(blueIcon), //behövs ingen icon här? Ingrid
                 }
             });
-
 
             createSearchBoxCities(map);
             updateOwnersObject();
@@ -224,18 +213,13 @@
         //************* FUNCTIONS UNDER HERE *****************
 
         function createMarker(i, map, propertyFeatures) {
-            //            lat = propertyGEOJSON.features[i].geometry.coordinates[0];
-            //            lng = propertyGEOJSON.features[i].geometry.coordinates[1];
-            //            ownerID = propertyGEOJSON.features[i].properties.owners;
-            //            leaseHolderID = propertyGEOJSON.features[i].properties.leaseholders;
 
             lat = propertyFeatures.geometry.coordinates[0];
             lng = propertyFeatures.geometry.coordinates[1];
             ownerID = propertyFeatures.properties.owners;
             leaseHolderID = propertyFeatures.properties.leaseholders;
 
-            var data = propertyGEOJSON, //Ingrid: behöver nog inte data-variabeln
-                latLng = new google.maps.LatLng(lng, lat);
+            var latLng = new google.maps.LatLng(lng, lat);
 
             // Creating a marker and putting it on the map
             var propertyMarker = new google.maps.Marker({
@@ -258,30 +242,46 @@
 
         function createMarkerTrigger(map) {
             map.addListener('dragend', function() {
-                changeMarkers(map);
+                console.log("Dragged: " + isListenerFunctionDone);
+                if (isListenerFunctionDone) {
+                    isListenerFunctionDone = false;
+                    changeMarkers(map);
+                    isListenerFunctionDone = true;
+                }
+
             });
 
             map.addListener('zoom_changed', function() {
-                changeMarkers(map);
+                console.log("ZOOM: " + isListenerFunctionDone);
+                if (isListenerFunctionDone) {
+                    isListenerFunctionDone = false;
+                    changeMarkers(map);
+                    isListenerFunctionDone = true;
+                }
+//                if(map.getZoom() <=15){
+//                   map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+//                   }
             });
         }
 
         function changeMarkers(map) {
-            console.log(map.getZoom());
             if (map.getZoom() >= 17) {
                 updateOwnersObject();
                 updateLeaseHoldersObject();
                 if (deleteMarkers(map)) {
+                    console.log("Det är deletat");
                     addMarkers(map);
                 }
             } else {
                 // ADDA en infobox här. som säger varför prickar inte syns.
                 deleteMarkers(map);
+                unclickMarker(previousClickedMarker);
             }
+            console.log(propertyMarkers);
+            console.log("propertyMarkers ^");
         }
 
         function getScreenCoords(map) {
-            //var bounds = map.getBounds();
             var centerLat = map.getCenter().lat();
             var centerLng = map.getCenter().lng();
             return [centerLat, centerLng];
@@ -289,21 +289,17 @@
 
         function deleteMarkers(map) {
             if (!Array.isArray(propertyMarkers) || !propertyMarkers.length) {
-                console.log("There are no markers in the markers-array.");
+                //console.log("There are no markers in the markers-array.");
             } else {
-                console.log('katten');
-
                 // Clear out the old markers.
                 propertyMarkers.forEach(function(marker) {
                     marker.setMap(null);
                     // marker.visible = false;
                     //INGRID: Du borde ta bort markerns listener också.
                 });
-                //   propertyMarkers = [];
+                propertyMarkers = [];
 
             }
-            console.log(propertyMarkers);
-            console.log("deletat markers");
             return true
         }
 
@@ -319,19 +315,11 @@
                 },
                 success: function(result) {
                     propertyGEOJSON = result;
-                    var markers = [];
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
-                        //   markers.push(createMarker(i, map));
-                        propertyMarkers[i] = createMarker(i, map, propertyGEOJSON.features[i]);
+                        propertyMarkers.push(createMarker(i, map, propertyGEOJSON.features[i]));
                     }
-                    console.log(propertyGEOJSON);
-                    //                    console.log("skapat markers från mittenkoord: " + coords);
-                    //                    console.log(propertyMarkers);
-                    //                    console.log("addMarkers före ");
                 }
             });
-
-            updateOwnersObject();
         }
 
         function updateOwnersObject() {
@@ -381,7 +369,6 @@
                 searchBox.setBounds(map.getBounds());
             });
 
-            var markers = [];
             // Listen for the event fired when the user selects a prediction and retrieve
             // more details for that place.
             searchBox.addListener('places_changed', function() {
@@ -390,12 +377,6 @@
                 if (places.length == 0) {
                     return;
                 }
-
-                // Clear out the old markers.
-                markers.forEach(function(marker) {
-                    marker.setMap(null);
-                });
-                markers = [];
 
                 // For each place, get the icon, name and location.
                 var bounds = new google.maps.LatLngBounds();
@@ -416,16 +397,26 @@
             });
         }
 
-
         function findAndPrintOwners(theProperty) {
             var i;
-            for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
-                    var leaseHolderFeatures = findLeaseHolders(theProperty);
-                    writeToInfobox(ownerObj.features[i], leaseHolderFeatures, theProperty);
-                    break;
-                }
+            var matchedOwners = []
+            console.log(theProperty.ownerID.length + " längden");
+//            for (m = 0; i < theProperty.ownerID.length; i++) {
+//                console.log(m);
+//                console.log(theProperty.ownerID);
+//                console.log("m + theProperty.ownerID");
+                
+                for (i = 0; i < ownerObj.features.length; i++) {
+                    if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
+                        matchedOwners.push(ownerObj.features[i]);
+                        break;
+                    }
+                //}
             }
+            console.log(matchedOwners);
+            console.log("matchedOwners ^");
+            var leaseHolderFeatures = findLeaseHolders(theProperty);
+            writeToInfobox(matchedOwners, leaseHolderFeatures, theProperty);
         }
 
         function findLeaseHolders(theProperty) {
@@ -434,7 +425,6 @@
             var i;
             for (i = 0; i < leaseHolderObj.features.length; i++) {
                 if (leaseHolderObj.features[i].properties["pk"] == theProperty.leaseHolderID[0]) { //leaseHolderID is an array of all the leasholders IDs. Here we only fetch info for the first one.
-                    console.log("Det finns en tomträttsinnehavare");
                     return (leaseHolderObj.features[i]);
                 }
             }
@@ -458,12 +448,6 @@
         function writePropertyAndOwner(ownerFeatures, theProperty) {
             var textTillInfobox = "Infoboxtext are saved in this variable";
 
-            //Variables about the first owner
-            firstName = ownerFeatures.properties["firstname"];
-            surName = ownerFeatures.properties["surname"];
-            companyName = ownerFeatures.properties["coname"];
-            reg_no = ownerFeatures.properties["reg_no"];
-
             //Variables about the property
             area = theProperty.dbInfo.area / 10; //it's givven in tenth of sqare meters.
             municipality = theProperty.dbInfo.municipality;
@@ -475,19 +459,32 @@
             taxation_land = theProperty.dbInfo.taxation_land * 1000;
             taxation_build = theProperty.dbInfo.taxation_build * 1000;
 
-            console.log("Denna tomt har lös köpeskilling: " + theProperty.dbInfo.price_lo);
+            console.log("Denna tomt har denna lös köpeskilling: " + theProperty.dbInfo.price_lo);
 
             //   textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
             textTillInfobox = "<h4><b>" + fast_bet + "</b>";
-            if (firstName === '' && surName === '') {
-                textTillInfobox = textTillInfobox +
-                    "<h5><b> Ägare:</b> " + companyName +
-                    "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
-            } else if (companyName === '') {
 
-                textTillInfobox = textTillInfobox +
-                    "<h5><b> Ägare:</b>      " + firstName + " " + surName;
-            }
+            ownerFeatures.forEach(function(owner) {
+                console.log(owner);
+                console.log("owner ^");
+                //Variables about owners
+                firstName = owner.properties["firstname"];
+                surName = owner.properties["surname"];
+                companyName = owner.properties["coname"];
+                reg_no = owner.properties["reg_no"];
+
+                if (firstName === '' && surName === '') {
+                    textTillInfobox = textTillInfobox +
+                        "<h5><b> Ägare:</b> " + companyName +
+                        "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
+                } else if (companyName === '') {
+
+                    textTillInfobox = textTillInfobox +
+                        "<h5><b> Ägare:</b>      " + firstName + " " + surName;
+                }
+            });
+
+
 
             textTillInfobox = textTillInfobox +
                 "<h5><b> Area:</b> " + area + " kvm" +
@@ -522,13 +519,13 @@
             price_lo = leaseHolderFeatures.properties["price_lo"] + " " + leaseHolderFeatures.properties["currency_lo"];
             price_date = leaseHolderFeatures.properties["price_date"];
 
-//            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
-//                "<br><h4><b>Tomträttsinnehavare</b>" +
-//                "<h5><b> Namn:</b> " + firstName + " " + surName +
-//                "<h5><b> Ägare:</b> " + companyName +
-//                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
-//                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
-//                "<h5><b> Köpdatum:</b> " + price_date + " ";
+            //            document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
+            //                "<br><h4><b>Tomträttsinnehavare</b>" +
+            //                "<h5><b> Namn:</b> " + firstName + " " + surName +
+            //                "<h5><b> Ägare:</b> " + companyName +
+            //                "<h5><b> Fast Köpeskilling:</b> " + price_fa + " " +
+            //                "<h5><b> Lös Köpeskilling:</b> " + price_lo + " " +
+            //                "<h5><b> Köpdatum:</b> " + price_date + " ";
 
             textTillInfobox = "<br><h4><b>Tomträttsinnehavare</b>";
 

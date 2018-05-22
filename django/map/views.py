@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from django.template import loader
 from django.http import HttpResponse
-from .models import Punkt, Waypoint, Property, PropertyBoarder, PropertyOwner, LeaseHolder
+from .models import Property, PropertyBoarder, PropertyOwner, LeaseHolder
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
@@ -15,15 +15,6 @@ from pprint import pprint
 
 def index(request):
     return render(request, 'map/index.html')
-
-def punkt_datasets(request):
-    punkter = serialize('geojson', Punkt.objects.all())
-    print (punkter)
-    return HttpResponse(punkter, content_type='json')
-
-def waypoint_datasets(request):
-    waypoints = serialize('geojson', Waypoint.objects.all())
-    return HttpResponse(waypoints, content_type='json')
 
 def property_datasets(request):
     print("i punkters view.")
@@ -90,7 +81,3 @@ def propertyBoarder_datasets(request):
 #    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
 #    #punkter = serialize('geojson', Property.objects.all())
 #    return HttpResponse(punkter, content_type='json')
-
-def googleKarta(request):
-    print('views.py 1')
-    return render(request, 'map/googleKartaData.html')
