@@ -186,8 +186,6 @@
 
             // NOTE: This uses cross-domain XHR, and may not work on older browsers, comment from google.
 
-            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-
             map.data.setStyle(function(feature) { // Styling of boarderlines. Ingrid
                 return {
                     strokeWeight: 0.5,
@@ -255,6 +253,9 @@
                     changeMarkers(map);
                     isListenerFunctionDone = true;
                 }
+//                if(map.getZoom() <=15){
+//                   map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+//                   }
             });
         }
 
