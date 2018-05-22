@@ -393,13 +393,24 @@
 
         function findAndPrintOwners(theProperty) {
             var i;
-            for (i = 0; i < ownerObj.features.length; i++) {
-                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
-                    var leaseHolderFeatures = findLeaseHolders(theProperty);
-                    writeToInfobox(ownerObj.features[i], leaseHolderFeatures, theProperty);
-                    break;
+            var matchedOwners = []
+            console.log(theProperty.ownerID.length + " längden");
+            for (m = 0; i < theProperty.ownerID.length; i++) {
+                console.log(m);
+                console.log(theProperty.ownerID);
+                console.log("m + theProperty.ownerID");
+                
+                for (i = 0; i < ownerObj.features.length; i++) {
+                    if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[m]) { //IM: checks for one of the owners even if there are more of them.
+                        matchedOwners.push(ownerObj.features[i]);
+                        break;
+                    }
                 }
             }
+            console.log(matchedOwners);
+            console.log("matchedOwners ^");
+            var leaseHolderFeatures = findLeaseHolders(theProperty);
+            writeToInfobox(matchedOwners, leaseHolderFeatures, theProperty);
         }
 
         function findLeaseHolders(theProperty) {
@@ -431,12 +442,6 @@
         function writePropertyAndOwner(ownerFeatures, theProperty) {
             var textTillInfobox = "Infoboxtext are saved in this variable";
 
-            //Variables about the first owner
-            firstName = ownerFeatures.properties["firstname"];
-            surName = ownerFeatures.properties["surname"];
-            companyName = ownerFeatures.properties["coname"];
-            reg_no = ownerFeatures.properties["reg_no"];
-
             //Variables about the property
             area = theProperty.dbInfo.area / 10; //it's givven in tenth of sqare meters.
             municipality = theProperty.dbInfo.municipality;
@@ -452,15 +457,28 @@
 
             //   textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
             textTillInfobox = "<h4><b>" + fast_bet + "</b>";
-            if (firstName === '' && surName === '') {
-                textTillInfobox = textTillInfobox +
-                    "<h5><b> Ägare:</b> " + companyName +
-                    "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
-            } else if (companyName === '') {
 
-                textTillInfobox = textTillInfobox +
-                    "<h5><b> Ägare:</b>      " + firstName + " " + surName;
-            }
+            ownerFeatures.forEach(function(owner) {
+                console.log(owner);
+                console.log("owner ^");
+                //Variables about owners
+                firstName = owner.properties["firstname"];
+                surName = owner.properties["surname"];
+                companyName = owner.properties["coname"];
+                reg_no = owner.properties["reg_no"];
+
+                if (firstName === '' && surName === '') {
+                    textTillInfobox = textTillInfobox +
+                        "<h5><b> Ägare:</b> " + companyName +
+                        "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
+                } else if (companyName === '') {
+
+                    textTillInfobox = textTillInfobox +
+                        "<h5><b> Ägare:</b>      " + firstName + " " + surName;
+                }
+            });
+
+
 
             textTillInfobox = textTillInfobox +
                 "<h5><b> Area:</b> " + area + " kvm" +
