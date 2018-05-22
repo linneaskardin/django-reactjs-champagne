@@ -18,7 +18,7 @@ propertyBoarder_mapping = {
     'geom': 'MULTILINESTRING',
 }
 
-propertyBoarder_shp = os.path .abspath(os.path.join(os.path.dirname(__file__),'data/al_get.shp'))
+propertyBoarder_shp = os.path .abspath(os.path.join(os.path.dirname(__file__),'data/borders_wgs84.shp'))
 
 def run(verbose=True):
     lm = LayerMapping(PropertyBoarder, propertyBoarder_shp, propertyBoarder_mapping, transform=False, encoding='iso-8859-1')

@@ -4,6 +4,16 @@
 {% block title %}Home{% endblock %}
 {% block main %}
 
+<head>
+    {{ form.media }}
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+    <style>
+          #text-box {
+      margin-left: 40pt;
+  }    
+    </style>
+</head>
 
 {% if user.is_authenticated %}
 <!-- This will appear if you have signed in -->
@@ -18,7 +28,6 @@
     <a href="{% url 'logout' %}"><p>Logga ut</p></a>
   </div>
   <img src="http://www.nattpokalen.se/wp-content/uploads/2018/02/Toolgate-logo-svart-300x162.png" alt="..." class="img-responsive center-block" />
- 
 {% else %}
 
 <!-- This will appear if you have NOT signed in -->
@@ -33,28 +42,38 @@
 </div>
 <div class="container" style="background-color:  #f2f2f2">
  <div class="row">
-   <div class="col-sm-6">
-     <br>
-       <img src="https://www.jqueryscript.net/images/Show-Nearby-Places-jQuery-Google-Maps-WhatsNearby.jpg" class="img-fluid" alt="Responsive image"><br>
+   <div class="col-md-4">
+     <br><br><br>
+       <img src="https://www.jqueryscript.net/images/Show-Nearby-Places-jQuery-Google-Maps-WhatsNearby.jpg" class="img-responsive" alt="Responsive image"><br>
      <br>
      </div>
-   <div class="col-sm-6" style="background-color:  #f2f2f2">
+   <div class="col-md-4" style="background-color:  #f2f2f2">
      <div class="card text-center">
        <div class="card-body">
            <h1 class="card-title">Abonnemang</h1><br>
+           <div id="text-box" class="card-body text-left">
            <p>
              <li>Uppdaterad data från Lantmäteriet</li><br>
              <li>Data över hela Sverige</li><br>
-             <li>bla bla bla</li><br>
+             <li>Fastighetsägare, Area, Prisinformation</li><br>
            </p>
+          </div>
            <h1 class="card-text">20 000 SEK/år</h1><br>
            <a href="{% url 'signup' %}" class="btn btn-primary">Skapa konto</a><br><br>
-           <a href="/about">Mer information</a> 
+           <a href="/about">Mer information</a>
          </div> 
        </div>
+       <br>
      </div>
+     
+     <div class="col-md-4">
+      <br><br><br><br><br><br>
+        <img src="http://www.nattpokalen.se/wp-content/uploads/2018/02/Toolgate-logo-svart-300x162.png" class="img-responsive">
+      <br>
+      </div>
    </div>
  </div>
+
  {% endif %}
  {% endblock %}
 
