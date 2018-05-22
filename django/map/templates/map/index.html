@@ -1,7 +1,7 @@
-{% extends "base.html" %} 
-{% load render_bundle from webpack_loader %} 
-{% load bootstrap4 %} 
-{% block title %}Index{% endblock %} 
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+{% load bootstrap4 %}
+{% block title %}Index{% endblock %}
 {% block main %} {% load static %} {% load leaflet_tags %}
 
 <!doctype html>
@@ -82,7 +82,7 @@
         }
         #info-box-text{
             margin-top: 15%;
-        } 
+        }
 
         #logga {
             padding: 10%;
@@ -103,7 +103,7 @@
         <h3>Toolgate Maps </h3>
 
         <h4>Klickbara ikoner visas endast då du zoomat in på kartan. </h4>
-        
+
 
     </div>
     <input id="citySearch" class="controls" type="text" placeholder="Sök (adress, stad...)">
@@ -116,7 +116,7 @@
 </div>
     <div id="logga">
     <img src="http://www.nattpokalen.se/wp-content/uploads/2018/02/Toolgate-logo-svart-300x162.png"  style="width: 50%"><br>
-    </div>    
+    </div>
 
     </div>
     <div id="info-box"></div>
@@ -426,7 +426,7 @@
 //                console.log(m);
 //                console.log(theProperty.ownerID);
 //                console.log("m + theProperty.ownerID");
-                
+
                 for (i = 0; i < ownerObj.features.length; i++) {
                     if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
                         matchedOwners.push(ownerObj.features[i]);
@@ -484,35 +484,62 @@
 
             //   textTillInfobox = "<h4><b> Fastighetsinformation</b>" + "<h5><b>Fastighetsbeteckning:</b> " + fast_bet;
             textTillInfobox = "<h4><b>" + fast_bet + "</b>";
+                        ownerFeatures.forEach(function(owner) {
+              console.log(owner);
+              console.log("owner ^");
+              //Variables about owners
+              firstName = owner.properties["firstname"];
+              surName = owner.properties["surname"];
+              companyName = owner.properties["coname"];
+              reg_no = owner.properties["reg_no"];
 
-            ownerFeatures.forEach(function(owner) {
-                console.log(owner);
-                console.log("owner ^");
-                //Variables about owners
-                firstName = owner.properties["firstname"];
-                surName = owner.properties["surname"];
-                companyName = owner.properties["coname"];
-                reg_no = owner.properties["reg_no"];
+              if (firstName === '' && surName === '') {
+                textTillInfobox = textTillInfobox +
+                "<h5><b> Ägare:</b> " + companyName +
+                "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
+              } else if (companyName === '') {
 
-                if (firstName === '' && surName === '') {
-                    textTillInfobox = textTillInfobox +
-                        "<h5><b> Ägare:</b> " + companyName +
-                        "<h5><b> Organisationsnummer:</b>     " + " " + reg_no;
-                } else if (companyName === '') {
-
-                    textTillInfobox = textTillInfobox +
-                        "<h5><b> Ägare:</b>      " + firstName + " " + surName;
-                }
+                textTillInfobox = textTillInfobox +
+                "<h5><b> Ägare:</b>      " + firstName + " " + surName;
+              }
             });
+            if (area === 0) {
 
+                textTillInfobox = textTillInfobox +
+                "<h5><b> Area:</b> ";
+            }
+            else{
+              textTillInfobox = textTillInfobox +
+              "<h5><b> Area:</b> " + area + " kvm";
+            }
 
+            var taxeringsvarde = "Taxation value is saved in this variable";
+
+            if (taxation_build === 0 && taxation_land === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+
+            else if (taxation_land === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+            else if (taxation_build === 0){
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
+            else{
+              taxeringsvarde = "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
+              "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
+              "<h5><b> Taxeringsår:</b> " + taxation_year;
+            }
 
             textTillInfobox = textTillInfobox +
-                "<h5><b> Area:</b> " + area + " kvm" +
                 "<br><br><h4><b> Prisinformation</b> " +
-                "<h5><b> Taxeringsvärde mark:</b> " + taxation_land + " SEK" +
-                "<h5><b> Taxeringsvärde byggnad(er):</b> " + taxation_build + " SEK" +
-                "<h5><b> Taxeringsår:</b> " + taxation_year;
+                taxeringsvarde;
 
             textTillInfobox = textTillInfobox +
                 "<h5><b> Fast Köpeskilling:</b> " + price_fa;
@@ -521,9 +548,15 @@
                 textTillInfobox = textTillInfobox +
                     "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
+            if (theProperty.dbInfo.price_date != ''){
+              textTillInfobox = textTillInfobox +
+                "<h5><b> Köpdatum:</b> " + price_date.slice(0,4) + '-' + price_date.slice(4,6) + '-' + price_date.slice(6,8);
 
-            textTillInfobox = textTillInfobox +
-                "<h5><b> Köpdatum:</b> " + price_date;
+            }
+            else{
+              textTillInfobox = textTillInfobox +
+                "<h5><b> Köpdatum:</b> ";
+              }
 
             document.getElementById('info-box').innerHTML = textTillInfobox;
         }
@@ -566,8 +599,15 @@
                     "<h5><b> Lös Köpeskilling:</b> " + price_lo;
             }
 
-            textTillInfobox = textTillInfobox +
-                "<h5><b> Köpdatum:</b> " + price_date;
+            if (leaseHolderFeatures.properties["price_date"] != ''){
+              textTillInfobox = textTillInfobox +
+              "<h5><b> Köpdatum:</b> " + price_date.slice(0,4) + '-' + price_date.slice(4,6) + '-' + price_date.slice(6,8);
+
+            }
+            else{
+              textTillInfobox = textTillInfobox +
+              "<h5><b> Köpdatum:</b> ";
+            }
 
             document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML +
                 textTillInfobox;
