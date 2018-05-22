@@ -32,7 +32,7 @@
         }
 
         h6 {
-          color: gray;
+            color: gray;
         }
 
         #intro-text {
@@ -124,6 +124,7 @@
         var ownersURL = "http://localhost:8000/toolgate_maps/propertyOwners_data/";
         var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
         var isListenerFunctionDone = true;
+        var showBorders = false;
         var blueIcon = {
             path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
             fillColor: 'blue',
@@ -200,6 +201,8 @@
                 }
             });
 
+            map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
+
             createSearchBoxCities(map);
             updateOwnersObject();
             updateLeaseHoldersObject();
@@ -242,7 +245,7 @@
 
         function createMarkerTrigger(map) {
             map.addListener('dragend', function() {
-                console.log("Dragged: " + isListenerFunctionDone);
+//                console.log("Dragged: " + isListenerFunctionDone);
                 if (isListenerFunctionDone) {
                     isListenerFunctionDone = false;
                     changeMarkers(map);
@@ -252,15 +255,24 @@
             });
 
             map.addListener('zoom_changed', function() {
-                console.log("ZOOM: " + isListenerFunctionDone);
+                //console.log("ZOOM: " + isListenerFunctionDone);
                 if (isListenerFunctionDone) {
                     isListenerFunctionDone = false;
                     changeMarkers(map);
                     isListenerFunctionDone = true;
                 }
-//                if(map.getZoom() <=15){
-//                   map.data.loadGeoJson('http://localhost:8000/toolgate_maps/propertyBorders_data/');
-//                   }
+                
+                if (map.getZoom() > 15) {
+                    console.log("visa borders");
+                    addPropertyBorders(map);
+                    
+                } else {
+                    console.log("ta bort borders");
+                    map.data.forEach(function(feature) {
+                        map.data.remove(feature);
+                    });
+                }
+
             });
         }
 
@@ -278,7 +290,7 @@
                 unclickMarker(previousClickedMarker);
             }
             console.log(propertyMarkers);
-            console.log("propertyMarkers ^");
+//            console.log("propertyMarkers ^");
         }
 
         function getScreenCoords(map) {
@@ -318,6 +330,23 @@
                     for (var i = 0, length = propertyGEOJSON.features.length; i < length; i++) {
                         propertyMarkers.push(createMarker(i, map, propertyGEOJSON.features[i]));
                     }
+                }
+            });
+        }
+
+        function addPropertyBorders(map) {
+            var coords = getScreenCoords(map);
+            $.ajax({
+                url: 'http://localhost:8000/toolgate_maps/propertyBorders_data/',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                    centerLat: coords[0],
+                    centerLng: coords[1],
+                },
+                success: function(result) {
+                    propertyBorderGEOJSON = result;
+                    map.data.addGeoJson(propertyBorderGEOJSON);
                 }
             });
         }
@@ -401,16 +430,16 @@
             var i;
             var matchedOwners = []
             console.log(theProperty.ownerID.length + " längden");
-//            for (m = 0; i < theProperty.ownerID.length; i++) {
-//                console.log(m);
-//                console.log(theProperty.ownerID);
-//                console.log("m + theProperty.ownerID");
-                
-                for (i = 0; i < ownerObj.features.length; i++) {
-                    if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
-                        matchedOwners.push(ownerObj.features[i]);
-                        break;
-                    }
+            //            for (m = 0; i < theProperty.ownerID.length; i++) {
+            //                console.log(m);
+            //                console.log(theProperty.ownerID);
+            //                console.log("m + theProperty.ownerID");
+
+            for (i = 0; i < ownerObj.features.length; i++) {
+                if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
+                    matchedOwners.push(ownerObj.features[i]);
+                    break;
+                }
                 //}
             }
             console.log(matchedOwners);
@@ -435,7 +464,7 @@
             writePropertyAndOwner(ownerFeatures, theProperty);
 
             if (leaseHolderFeatures == "NoMatch") {
-                document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML + "<br><h4><b>Tomträttsinnehavare</b> "+"<br><h5> Vald fastighet har ingen tomträtt<br>";
+                document.getElementById('info-box').innerHTML = document.getElementById('info-box').innerHTML + "<br><h4><b>Tomträttsinnehavare</b> " + "<br><h5> Vald fastighet har ingen tomträtt<br>";
             } else {
                 writeLeaseHolder(leaseHolderFeatures);
             }
