@@ -23,3 +23,8 @@ http://all-geo.org/volcan01010/2012/11/change-coordinates-with-pyproj/
 
 The merge of multidimensional dictionaries in load_data was made with help from:
 https://stackoverflow.com/questions/38987/how-to-merge-two-dictionaries-in-a-single-expression
+
+The login funciton and the sign up function was made with help from:
+https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
+and 
+https://wsvincent.com/django-user-authentication-tutorial-signup/
