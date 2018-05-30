@@ -31,3 +31,9 @@ https://wsvincent.com/django-user-authentication-tutorial-signup/
 
 Map marker icons are taken from:
 http://map-icons.com
+
+The map is from:
+https://developers.google.com/maps/documentation/javascript
+
+The search box of the map is from:
+https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
