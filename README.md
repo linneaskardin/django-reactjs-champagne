@@ -1,6 +1,6 @@
 <b>This is the Toolgate Maps project for the CPU group.</b>
 
-CHAMAPGNE-MASTER is the master branch of this repository.
+CHAMAPGNE-MASTER is the master branch of this repository. 
 
 This is the file-structure of the project. Only some of the files are expalined explicitly. 
 - django
@@ -9,6 +9,10 @@ This is the file-structure of the project. Only some of the files are expalined 
     - map - contains the map-page
         - management - contains scripts in the command file for uploading data or translating property borders between coordinate systems. The scripts are run by typing *python manage.py [scriptname]* in the terminal
         - models.py - contains the models for the data displayed on the map
+        - load_data.py - contains script for uploading property boarders.
+        - templates - contains the templates for the map
+            - map -
+                - index.html - generates the map view. 
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
 
