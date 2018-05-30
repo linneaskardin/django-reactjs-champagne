@@ -37,3 +37,6 @@ https://developers.google.com/maps/documentation/javascript
 
 The search box of the map is from:
 https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
+
+The geolocation function in index was made with help from:
+https://developers.google.com/maps/documentation/javascript/geolocation
