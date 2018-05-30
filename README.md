@@ -8,7 +8,7 @@ This is the file-structure of the project. Only some of the files are expalined 
         templates - contains the templates for the fron-end
     - map - contains the map-page
         - management - contains scripts in the command file for uploading data or translating property borders between coordinate systems. The scripts are run by typing *python manage.py [scriptname]* in the terminal
-        - models - conatins the models for the data displayed on the map
+        - models.py - conatins the models for the data displayed on the map
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
 
