@@ -1,4 +1,4 @@
-This is the Toolgate Maps project for the CPU group.
+<u><b>This is the Toolgate Maps project for the CPU group.</b></u>
 
 CHAMAPGNE-MASTER is the master branch of this repository. 
 
@@ -12,7 +12,7 @@ This is the file-structure of the project. Only some of the files are expalined 
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
 
-<b>References to the code:</b>
+<u><b>References to the code:</b></u>
 
 Merge between Django and React was done with the help from: 
 https://github.com/mbrochh/django-reactjs-boilerplate
