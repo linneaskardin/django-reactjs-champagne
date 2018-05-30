@@ -11,7 +11,7 @@ This is the file-structure of the project. Only some of the files are expalined 
         - models.py - contains the models for the data displayed on the map
         - load_data.py - contains script for uploading property boarders.
         - templates - contains the templates for the map
-            - map -
+            - map
                 - index.html - generates the map view. 
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
