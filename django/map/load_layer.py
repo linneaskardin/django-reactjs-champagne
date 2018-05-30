@@ -1,6 +1,5 @@
 import os
-from django.contrib.gis.utils import LayerMapping
-#import mpl_toolkits.basemap.pyproj as pyproj #så har Clara skrivit den
+from django.contrib.gis.utils import LayerMappings
 from django.contrib.gis.db import models
 import pyproj
 from .models import PropertyBoarder
