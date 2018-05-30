@@ -1,6 +1,6 @@
 <b>This is the Toolgate Maps project for the CPU group.</b>
 
-CHAMAPGNE-MASTER is the master branch of this repository. 
+CHAMAPGNE-MASTER is the master branch of this repository. <font color="red">This is some text!</font>
 
 This is the file-structure of the project. Only some of the files are expalined explicitly. 
 - django
