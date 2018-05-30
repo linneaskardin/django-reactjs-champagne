@@ -7,6 +7,7 @@ This is the file-structure of the project. Only some of the files are expalined 
     - djreact - has the stucture of a djang app. 
         templates - contains the templates for the fron-end
     - map - contains the map-page
+        - management - contains scripts for uploading data or translating property borders coordinate systems. The scripts are run by typing python manage.py <scriptname> in the terminal
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
 
