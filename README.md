@@ -12,7 +12,7 @@ This is the file-structure of the project. Only some of the files are expalined 
     - menuapp - has the structure of a react app and contains the creation of the navigation bar. 
 
 
-References to the code:
+<b>References to the code:</b>
 
 Merge between Django and React was done with the help from: 
 https://github.com/mbrochh/django-reactjs-boilerplate
