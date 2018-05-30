@@ -28,3 +28,6 @@ The login funciton and the sign up function was made with help from:
 https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
 and 
 https://wsvincent.com/django-user-authentication-tutorial-signup/
+
+Map marker icons are taken from:
+http://map-icons.com
