@@ -2,6 +2,13 @@ This is the Toolgate Maps project for the CPU group.
 
 CHAMAPGNE-MASTER is the master branch of this repository. 
 
+This is the file-structure of the project. Only some of the files are expalined explicitly. 
+- django
+    - djreact - has the stucture of a djang app. 
+        templates - contains the templates for the fron-end
+    - map - contains the map-page
+    - menuapp - has the stucrue of a react app and contains the creation of the navigation bar. 
+
 
 References to the code:
 
