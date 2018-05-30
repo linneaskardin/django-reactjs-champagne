@@ -10,3 +10,6 @@ https://github.com/mbrochh/django-reactjs-boilerplate
 
 Navigation bar was created with Bootstrap with the help from: 
 https://getbootstrap.com/docs/4.0/components/navbar/
+
+Translation of coordinates in load_data was made with help from:
+http://all-geo.org/volcan01010/2012/11/change-coordinates-with-pyproj/ 
