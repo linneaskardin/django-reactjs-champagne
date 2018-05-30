@@ -11,6 +11,7 @@ class Command(BaseCommand):
         from django.contrib.gis.geos import Point
         import csv
         # Import data for coordinates
+        # Translation of coordinates was made with help from: http://all-geo.org/volcan01010/2012/11/change-coordinates-with-pyproj/
         with open('data/MEDIAN_09M.txt', 'r', encoding='iso-8859-1', newline='') as csvmed: # Need encoding mac_roman and newline=''. Don't know why //CE
             readerkoord = csv.reader(csvmed, delimiter=';')
             dictCoord={} # create dictionary to connect data
@@ -104,6 +105,7 @@ class Command(BaseCommand):
             'price_lo':e.get(key,{'price_lo':'NA'})['price_lo'],'price_date':e.get(key,{'price_date':'NA'})['price_date']}
 
         # Merge all dictionaries according to what fields exists for the specific fnr
+        # The merge of multidimensional dictionaries was made with help from: https://stackoverflow.com/questions/38987/how-to-merge-two-dictionaries-in-a-single-expression
         z = {}
         for key,value in dictOwner.items():# iterator over e
             if key in dictCoord: # some PropertyOwners don't have coordinates
