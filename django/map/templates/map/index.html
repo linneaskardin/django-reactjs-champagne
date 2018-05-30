@@ -144,6 +144,7 @@
         var leaseHoldersURL = "http://localhost:8000/toolgate_maps/leaseHolder_data/";
         var isListenerFunctionDone = true;
         var showBorders = false;
+        // Map marker icons are taken from: http://map-icons.com
         var blueIcon = {
             path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
             fillColor: 'blue',
@@ -173,6 +174,7 @@
                 }
             });
             // Try HTML5 geolocation.
+            //The geolocation function was made with help from: https://developers.google.com/maps/documentation/javascript/geolocation
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var pos = {
@@ -250,7 +252,7 @@
                 leaseHolderID: leaseHolderID,
                 showInfo: false,
                 id: i,
-                dbInfo: propertyFeatures.properties 
+                dbInfo: propertyFeatures.properties
             });
             //console.log(latLng.toString());
 
@@ -438,7 +440,7 @@
         function findAndPrintOwners(theProperty) {
             var i;
             var matchedOwners = []
-            //            for (m = 0; i < theProperty.ownerID.length; i++) 
+            //            for (m = 0; i < theProperty.ownerID.length; i++)
             for (i = 0; i < ownerObj.features.length; i++) {
                 if (ownerObj.features[i].properties["pk"] == theProperty.ownerID[0]) { //IM: checks for one of the owners even if there are more of them.
                     matchedOwners.push(ownerObj.features[i]);
