@@ -10,7 +10,6 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
 from django.contrib.gis.measure import D
 from django.contrib.gis.geos import GEOSGeometry, Point
-
 from pprint import pprint
 
 def index(request):
@@ -74,15 +73,16 @@ def propertyBoarder_datasets(request):
     centerLng = float(request.POST.get('centerLng'))
     point = Point(centerLng, centerLat)
 
-    punkter = serialize('geojson', PropertyBoarder.objects.all())
-    #punkter = serialize('geojson', PropertyBoarder.objects.filter(pk__gte=50000))
-    return HttpResponse(punkter, content_type='json')
+    bordersGEOJson = serialize('geojson', PropertyBoarder.objects.all())
+    
+    return HttpResponse(bordersGEOJson, content_type='json')
 
 
 
 
-###########SPARAD KOD##########
+###########SAVED CODE##########
 
 #    punkter = serialize('geojson', PropertyOwner.objects.filter(pk__lte=100)) #gte = greater/equal than, lte = less/equal than
 #    #punkter = serialize('geojson', Property.objects.all())
 #    return HttpResponse(punkter, content_type='json')
+#   bordersGEOJson = serialize('geojson', PropertyBoarder.objects.filter(pk__gte=50000))
